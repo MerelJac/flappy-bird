@@ -12,7 +12,7 @@
   <body>
     <!-- ── Start Screen ── -->
     <div id="start-screen" class="screen active">
-      <div class="logo-placeholder">Logo / Title Art</div>
+      <div class="logo-placeholder">Salmon Run</div>
       <div class="bird-preview-placeholder">Bird</div>
       <p class="tap-hint">Tap or click to flap!</p>
       <button class="btn btn-start" id="btn-start">Play</button>
@@ -21,6 +21,7 @@
     <!-- ── Game Screen ── -->
     <div id="game-screen" class="screen">
       <div id="score-display">0</div>
+       <div id="countdown-display"></div>
       <canvas id="game-canvas"></canvas>
     </div>
 
@@ -102,8 +103,9 @@
         bestScore = 0;
 
       function resetGame() {
-        state = "running"; // 'running' | 'dead'
-        bird = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 38, h: 28, angle: 0 };
+        // 'countdown' | 'running' | 'dead'
+        state = "countdown";
+        bird  = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 38, h: 28, angle: 0 };
         pipes = [];
         score = 0;
         frame = 0;
@@ -234,6 +236,47 @@
         return false;
       }
 
+      // ── Countdown ──────────────────────────────────────────────────────────────
+      const countdownEl = document.getElementById("countdown-display");
+
+      function startCountdown(callback) {
+        let count = 3;
+
+        function showNumber(text, onDone) {
+          countdownEl.style.transition = "none";
+          countdownEl.style.opacity = "1";
+          countdownEl.style.transform = "translate(-50%, -50%) scale(1.4)";
+          countdownEl.textContent = text;
+
+          // trigger reflow so transition applies
+          countdownEl.getBoundingClientRect();
+
+          countdownEl.style.transition =
+            "transform 0.8s ease-out, opacity 0.8s ease-out";
+          countdownEl.style.transform = "translate(-50%, -50%) scale(0.9)";
+          countdownEl.style.opacity = "0";
+
+          setTimeout(onDone, 900);
+        }
+
+        function tick() {
+          if (count > 0) {
+            showNumber(String(count), () => {
+              count--;
+              tick();
+            });
+          } else {
+            showNumber("GO!", () => {
+              countdownEl.style.transition = "none";
+              countdownEl.style.opacity = "0";
+              callback();
+            });
+          }
+        }
+
+        tick();
+      }
+
       // ── Game loop ──────────────────────────────────────────────────────────────
       function update() {
         frame++;
@@ -272,36 +315,48 @@
       }
 
       let animId;
+
+      function startGame() {
+        showScreen("game");
+        resetGame();
+        cancelAnimationFrame(animId);
+        animId = requestAnimationFrame(gameLoop);
+        startCountdown(() => {
+          state = "running";
+        });
+      }
+
+     
+      // ── Game loop ──────────────────────────────────────────────────────────────
       function gameLoop() {
         if (state === "running") {
           update();
           render();
           animId = requestAnimationFrame(gameLoop);
+        } else if (state === "countdown") {
+          render(); // draw static scene while counting down
+          animId = requestAnimationFrame(gameLoop);
         } else {
-          render(); // draw final frame
+          render();
           endGame();
         }
       }
-
+ 
       function endGame() {
         cancelAnimationFrame(animId);
         if (score > bestScore) bestScore = score;
         document.getElementById("final-score").textContent = score;
-        document.getElementById("best-score").textContent = bestScore;
+        document.getElementById("best-score").textContent  = bestScore;
         setTimeout(() => showScreen("end"), 600);
       }
-
+ 
       // ── Button wiring ──────────────────────────────────────────────────────────
       document.getElementById("btn-start").addEventListener("click", () => {
-        showScreen("game");
-        resetGame();
-        gameLoop();
+        startGame();
       });
 
       document.getElementById("btn-restart").addEventListener("click", () => {
-        showScreen("game");
-        resetGame();
-        gameLoop();
+        startGame();
       });
     </script>
   </body>

@@ -149,6 +149,8 @@
       letter-spacing: 1px;
     }
 
+          #countdown-display { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 96px; font-weight: 900; color: #fff; text-shadow: 3px 3px 0 #000; z-index: 20; pointer-events: none; opacity: 0; }
+
     .score-value {
       font-size: 3rem;
       color: #333;
