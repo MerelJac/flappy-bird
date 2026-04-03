@@ -21,7 +21,7 @@
     <!-- ── Game Screen ── -->
     <div id="game-screen" class="screen">
       <div id="score-display">0</div>
-       <div id="countdown-display"></div>
+      <div id="countdown-display"></div>
       <canvas id="game-canvas"></canvas>
     </div>
 
@@ -80,6 +80,7 @@
       const PIPE_WIDTH = 52;
       const PIPE_SPAWN_X = GAME_W + 60;
       const PIPE_INTERVAL = 90; // frames
+      const SALMON = "./salmon.png"; // placeholder, swap with actual image later
 
       // Placeholder colours (swap with images later)
       const COLOR = {
@@ -105,7 +106,7 @@
       function resetGame() {
         // 'countdown' | 'running' | 'dead'
         state = "countdown";
-        bird  = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 38, h: 28, angle: 0 };
+        bird = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 38, h: 28, angle: 0 };
         pipes = [];
         score = 0;
         frame = 0;
@@ -167,47 +168,29 @@
         ctx.lineWidth = 2;
         ctx.stroke();
       }
+      const fishImg = new Image();
+      fishImg.src = SALMON;
 
-      function drawBird() {
+      function drawFish() {
         ctx.save();
         ctx.translate(bird.x + bird.w / 2, bird.y + bird.h / 2);
+ 
+        // Tilt up when flapping, nose-down when falling
         const targetAngle = bird.vy < 0 ? -0.4 : Math.min(bird.vy * 0.07, 1.2);
         bird.angle += (targetAngle - bird.angle) * 0.15;
         ctx.rotate(bird.angle);
-
-        // Body
-        ctx.fillStyle = COLOR.bird;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, bird.w / 2, bird.h / 2, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Wing (simple oval)
-        ctx.fillStyle = "#e8a010";
-        ctx.beginPath();
-        ctx.ellipse(-4, 4, 10, 6, 0.3, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Eye white
-        ctx.fillStyle = COLOR.birdEye;
-        ctx.beginPath();
-        ctx.arc(8, -5, 6, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Pupil
-        ctx.fillStyle = COLOR.birdPupil;
-        ctx.beginPath();
-        ctx.arc(10, -5, 3, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Beak
-        ctx.fillStyle = COLOR.birdBeak;
-        ctx.beginPath();
-        ctx.moveTo(14, -2);
-        ctx.lineTo(22, 0);
-        ctx.lineTo(14, 4);
-        ctx.closePath();
-        ctx.fill();
-
+ 
+        if (fishImg.complete && fishImg.naturalWidth > 0) {
+          // Draw the fish image centred on the bird's position
+          ctx.drawImage(fishImg, -bird.w / 2, -bird.h / 2, bird.w, bird.h);
+        } else {
+          // Fallback: simple coloured ellipse while image loads (or if missing)
+          ctx.fillStyle = "#f7b731";
+          ctx.beginPath();
+          ctx.ellipse(0, 0, bird.w / 2, bird.h / 2, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+ 
         ctx.restore();
       }
 
@@ -310,7 +293,7 @@
         ctx.clearRect(0, 0, GAME_W, GAME_H);
         drawBackground();
         pipes.forEach(drawPipe);
-        drawBird();
+        drawFish();
         drawScore();
       }
 
@@ -326,7 +309,6 @@
         });
       }
 
-     
       // ── Game loop ──────────────────────────────────────────────────────────────
       function gameLoop() {
         if (state === "running") {
@@ -341,15 +323,15 @@
           endGame();
         }
       }
- 
+
       function endGame() {
         cancelAnimationFrame(animId);
         if (score > bestScore) bestScore = score;
         document.getElementById("final-score").textContent = score;
-        document.getElementById("best-score").textContent  = bestScore;
+        document.getElementById("best-score").textContent = bestScore;
         setTimeout(() => showScreen("end"), 600);
       }
- 
+
       // ── Button wiring ──────────────────────────────────────────────────────────
       document.getElementById("btn-start").addEventListener("click", () => {
         startGame();

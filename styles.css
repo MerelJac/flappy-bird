@@ -31,7 +31,7 @@
 
     /* ── Start Screen ── */
     #start-screen {
-      background: linear-gradient(180deg, #87ceeb 0%, #b0e0ff 60%, #90ee90 60%, #228b22 100%);
+      background: url("/43887da7bd8860d68a8de8ba619d25f3b584a57d.png") center/cover no-repeat;
       gap: 24px;
     }
 
@@ -120,7 +120,7 @@
 
     /* ── End Screen ── */
     #end-screen {
-      background: linear-gradient(180deg, #87ceeb 0%, #b0e0ff 60%, #90ee90 60%, #228b22 100%);
+      background: url("/43887da7bd8860d68a8de8ba619d25f3b584a57d.png") center/cover no-repeat;
       gap: 20px;
     }
 
