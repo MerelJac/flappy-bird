@@ -49,19 +49,6 @@
       text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
     }
 
-    .bird-preview-placeholder {
-      width: min(80px, 20vw);
-      height: min(80px, 20vw);
-      background: rgba(255,200,0,0.4);
-      border: 3px dashed rgba(255,200,0,0.9);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      color: #7a5000;
-    }
-
     .tap-hint {
       font-size: 1.1rem;
       color: white;
@@ -116,6 +103,24 @@
       text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
       pointer-events: none;
       z-index: 10;
+    }
+
+    #info-display {
+      position: absolute;
+      top: 20px;
+      left: 16px;
+      max-width: 130px;
+      font-size: 0.7rem;
+      line-height: 1.35;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+      pointer-events: none;
+      z-index: 10;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+    #info-display.fade {
+      opacity: 0;
     }
 
     /* ── End Screen ── */

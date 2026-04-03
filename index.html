@@ -13,13 +13,14 @@
     <!-- ── Start Screen ── -->
     <div id="start-screen" class="screen active">
       <div class="logo-placeholder">Salmon Run</div>
-      <div class="bird-preview-placeholder">Bird</div>
-      <p class="tap-hint">Tap or click to flap!</p>
+      <div class=""><img src="./salmon.png" alt="Salmon"></div>
+      <p class="tap-hint">Try to avoid fishing nets and other obstacles!</p>
       <button class="btn btn-start" id="btn-start">Play</button>
     </div>
 
     <!-- ── Game Screen ── -->
     <div id="game-screen" class="screen">
+      <div id="info-display"></div>
       <div id="score-display">0</div>
       <div id="countdown-display"></div>
       <canvas id="game-canvas"></canvas>
@@ -83,6 +84,7 @@
       const NET_H = 35; // height of the net at the ocean floor
       const BOAT_W = 80;
       const BOAT_H = 50;
+      const OCEAN_TOP = Math.round(GAME_H * 0.2); // ocean surface = 20% down the page
       const TRASH_W = 32;
       const TRASH_H = 32;
       const TRASH_INTERVAL = 55; // frames between trash spawns
@@ -100,6 +102,49 @@
         birdPupil: "#333",
         birdBeak: "#e87b1e",
       };
+
+      // ── Informationals ────────────────────────────────────────────────────────
+      const FACTS = [
+        "8 million tonnes of plastic enter the ocean every year.",
+        "Salmon can detect their home river by smell alone.",
+        "Ghost nets account for 46% of the Great Pacific Garbage Patch.",
+        "Pacific salmon die after spawning — feeding the whole forest.",
+        "A single plastic bag can kill sea turtles who mistake it for jellyfish.",
+        "Salmon navigate using Earth's magnetic field.",
+        "Ocean plastic harms over 700 marine species.",
+        "Farmed salmon are fed wild-caught fish, straining ocean stocks.",
+        "Microplastics have been found in salmon tissue worldwide.",
+        "Healthy salmon runs bring vital nutrients from sea to land.",
+        "It takes 450 years for a plastic bottle to decompose at sea.",
+        "Salmon can leap up to 3.5 metres to climb waterfalls.",
+      ];
+
+      const infoEl = document.getElementById("info-display");
+      let infoTimeout = null;
+      let infoQueue = [];
+      let infoIndex = 0;
+
+      function startInfoRotation() {
+        // Shuffle a copy of the facts for this game
+        infoQueue = [...FACTS].sort(() => Math.random() - 0.5);
+        infoIndex = 0;
+        showNextFact();
+      }
+
+      function showNextFact() {
+        infoEl.classList.add("fade");
+        infoTimeout = setTimeout(() => {
+          infoEl.textContent = infoQueue[infoIndex % infoQueue.length];
+          infoEl.classList.remove("fade");
+          infoIndex++;
+          infoTimeout = setTimeout(showNextFact, 5000);
+        }, 400);
+      }
+
+      function stopInfoRotation() {
+        clearTimeout(infoTimeout);
+        infoEl.textContent = "";
+      }
 
       // ── State ──────────────────────────────────────────────────────────────────
       let state,
@@ -119,6 +164,8 @@
         score = 0;
         frame = 0;
         document.getElementById("score-display").textContent = "0";
+        stopInfoRotation();
+        startInfoRotation();
       }
 
       // ── Input ──────────────────────────────────────────────────────────────────
@@ -134,16 +181,17 @@
 
       // ── Drawing helpers ────────────────────────────────────────────────────────
       function drawBackground() {
-        // Sky
+        // Above water (sky)
         ctx.fillStyle = COLOR.sky;
-        ctx.fillRect(0, 0, GAME_W, GAME_H);
+        ctx.fillRect(0, 0, GAME_W, OCEAN_TOP);
 
-        // Ground strip
-        const groundY = GAME_H - 80;
-        ctx.fillStyle = COLOR.groundTop;
-        ctx.fillRect(0, groundY, GAME_W, 14);
+        // Ocean water
+        ctx.fillStyle = "#1a6fa8";
+        ctx.fillRect(0, OCEAN_TOP, GAME_W, GROUND_Y - OCEAN_TOP);
+
+        // Sand floor (no green strip)
         ctx.fillStyle = COLOR.ground;
-        ctx.fillRect(0, groundY + 14, GAME_W, GAME_H - groundY - 14);
+        ctx.fillRect(0, GROUND_Y, GAME_W, GAME_H - GROUND_Y);
       }
 
       function drawPipe(pipe) {
@@ -250,7 +298,7 @@
         const bh = bird.h - MARGIN * 2;
 
         // Ground / ceiling
-        if (bird.y + bird.h >= GROUND_Y || bird.y <= 0) return true;
+        if (bird.y + bird.h >= GROUND_Y || bird.y <= OCEAN_TOP) return true;
 
         for (const p of pipes) {
           // Top pipe (boat) collision
@@ -320,7 +368,7 @@
 
         // Spawn pipes
         if (frame % PIPE_INTERVAL === 0) {
-          pipes.push({ x: PIPE_SPAWN_X, topH: BOAT_H, scored: false });
+          pipes.push({ x: PIPE_SPAWN_X, topH: OCEAN_TOP, scored: false });
         }
 
         // Move pipes
@@ -337,7 +385,7 @@
 
         // Spawn trash at random heights within the water column
         if (frame % TRASH_INTERVAL === 0) {
-          const minY = BOAT_H + 10;
+          const minY = OCEAN_TOP + 10;
           const maxY = GROUND_Y - NET_H - TRASH_H - 10;
           trashItems.push({ x: PIPE_SPAWN_X, y: minY + Math.random() * (maxY - minY) });
         }
@@ -391,6 +439,7 @@
 
       function endGame() {
         cancelAnimationFrame(animId);
+        stopInfoRotation();
         if (score > bestScore) bestScore = score;
         document.getElementById("final-score").textContent = score;
         document.getElementById("best-score").textContent = bestScore;
