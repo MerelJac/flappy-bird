@@ -80,6 +80,12 @@
       const PIPE_WIDTH = 52;
       const PIPE_SPAWN_X = GAME_W + 60;
       const PIPE_INTERVAL = 90; // frames
+      const NET_H = 35; // height of the net at the ocean floor
+      const BOAT_W = 80;
+      const BOAT_H = 50;
+      const TRASH_W = 32;
+      const TRASH_H = 32;
+      const TRASH_INTERVAL = 55; // frames between trash spawns
       const SALMON = "./salmon.png"; // placeholder, swap with actual image later
 
       // Placeholder colours (swap with images later)
@@ -99,6 +105,7 @@
       let state,
         bird,
         pipes,
+        trashItems,
         score,
         frame,
         bestScore = 0;
@@ -108,6 +115,7 @@
         state = "countdown";
         bird = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 38, h: 28, angle: 0 };
         pipes = [];
+        trashItems = [];
         score = 0;
         frame = 0;
         document.getElementById("score-display").textContent = "0";
@@ -139,37 +147,54 @@
       }
 
       function drawPipe(pipe) {
-        const r = 6; // corner radius on cap
+        // Boat image sitting at the water surface (bottom of boat = pipe.topH)
+        const boatX = pipe.x + PIPE_WIDTH / 2 - BOAT_W / 2;
+        const boatY = pipe.topH - BOAT_H;
+        if (boatImg.complete && boatImg.naturalWidth > 0) {
+          ctx.drawImage(boatImg, boatX, boatY, BOAT_W, BOAT_H);
+        } else {
+          ctx.fillStyle = COLOR.pipe;
+          ctx.fillRect(pipe.x - 4, boatY, PIPE_WIDTH + 8, BOAT_H);
+        }
 
-        // Top pipe body
-        ctx.fillStyle = COLOR.pipe;
-        ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.topH - 22);
-
-        // Top pipe cap
+        // Wire from boat down to net
+        const wireX = pipe.x + PIPE_WIDTH / 2;
         ctx.beginPath();
-        ctx.roundRect(pipe.x - 4, pipe.topH - 22, PIPE_WIDTH + 8, 22, r);
-        ctx.fillStyle = COLOR.pipe;
-        ctx.fill();
-        ctx.strokeStyle = COLOR.pipeBorder;
-        ctx.lineWidth = 2;
+        ctx.moveTo(wireX, pipe.topH);
+        ctx.lineTo(wireX, GROUND_Y - NET_H);
+        ctx.strokeStyle = "#aaaaaa";
+        ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        // Bottom pipe body
-        const botCapY = pipe.topH + PIPE_GAP;
-        ctx.fillStyle = COLOR.pipe;
-        ctx.fillRect(pipe.x, botCapY + 22, PIPE_WIDTH, GAME_H);
+        // Net at ocean floor
+        const netX = pipe.x - 4;
+        const netY = GROUND_Y - NET_H;
+        const netW = PIPE_WIDTH + 8;
 
-        // Bottom pipe cap
-        ctx.beginPath();
-        ctx.roundRect(pipe.x - 4, botCapY, PIPE_WIDTH + 8, 22, r);
-        ctx.fillStyle = COLOR.pipe;
-        ctx.fill();
-        ctx.strokeStyle = COLOR.pipeBorder;
+        // Grid lines
+        ctx.strokeStyle = "#777";
+        ctx.lineWidth = 1;
+        const cols = 5;
+        for (let i = 0; i <= cols; i++) {
+          const lx = netX + (netW / cols) * i;
+          ctx.beginPath(); ctx.moveTo(lx, netY); ctx.lineTo(lx, GROUND_Y); ctx.stroke();
+        }
+        const rows = 3;
+        for (let i = 0; i <= rows; i++) {
+          const ly = netY + (NET_H / rows) * i;
+          ctx.beginPath(); ctx.moveTo(netX, ly); ctx.lineTo(netX + netW, ly); ctx.stroke();
+        }
+        // Net border
+        ctx.strokeStyle = "#555";
         ctx.lineWidth = 2;
-        ctx.stroke();
+        ctx.strokeRect(netX, netY, netW, NET_H);
       }
       const fishImg = new Image();
       fishImg.src = SALMON;
+      const boatImg = new Image();
+      boatImg.src = "./boat.png";
+      const trashImg = new Image();
+      trashImg.src = "./trash.png";
 
       function drawFish() {
         ctx.save();
@@ -194,6 +219,22 @@
         ctx.restore();
       }
 
+      function drawTrashItems() {
+        for (const t of trashItems) {
+          if (trashImg.complete && trashImg.naturalWidth > 0) {
+            ctx.drawImage(trashImg, t.x, t.y, TRASH_W, TRASH_H);
+          } else {
+            // Fallback: brown rectangle with a T label
+            ctx.fillStyle = "#8B4513";
+            ctx.fillRect(t.x, t.y, TRASH_W, TRASH_H);
+            ctx.fillStyle = "#fff";
+            ctx.font = "bold 14px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("T", t.x + TRASH_W / 2, t.y + TRASH_H / 2 + 5);
+          }
+        }
+      }
+
       function drawScore() {
         document.getElementById("score-display").textContent = score;
       }
@@ -212,10 +253,23 @@
         if (bird.y + bird.h >= GROUND_Y || bird.y <= 0) return true;
 
         for (const p of pipes) {
+          // Top pipe (boat) collision
           const inX = bx < p.x + PIPE_WIDTH && bx + bw > p.x;
-          if (!inX) continue;
-          if (by < p.topH || by + bh > p.topH + PIPE_GAP) return true;
+          if (inX && by < p.topH) return true;
+
+          // Net collision (wire is passable — only the net at the floor is deadly)
+          const netX = p.x - 4;
+          const netW = PIPE_WIDTH + 8;
+          const netY = GROUND_Y - NET_H;
+          const inNetX = bx < netX + netW && bx + bw > netX;
+          if (inNetX && by + bh > netY) return true;
         }
+
+        // Trash collision
+        for (const t of trashItems) {
+          if (bx < t.x + TRASH_W && bx + bw > t.x && by < t.y + TRASH_H && by + bh > t.y) return true;
+        }
+
         return false;
       }
 
@@ -266,8 +320,7 @@
 
         // Spawn pipes
         if (frame % PIPE_INTERVAL === 0) {
-          const topH = 80 + Math.random() * (GAME_H - 80 - 80 - PIPE_GAP - 80);
-          pipes.push({ x: PIPE_SPAWN_X, topH, scored: false });
+          pipes.push({ x: PIPE_SPAWN_X, topH: BOAT_H, scored: false });
         }
 
         // Move pipes
@@ -282,6 +335,17 @@
         // Remove off-screen pipes
         pipes = pipes.filter((p) => p.x + PIPE_WIDTH + 8 > 0);
 
+        // Spawn trash at random heights within the water column
+        if (frame % TRASH_INTERVAL === 0) {
+          const minY = BOAT_H + 10;
+          const maxY = GROUND_Y - NET_H - TRASH_H - 10;
+          trashItems.push({ x: PIPE_SPAWN_X, y: minY + Math.random() * (maxY - minY) });
+        }
+
+        // Move and cull trash
+        for (const t of trashItems) t.x -= PIPE_SPEED;
+        trashItems = trashItems.filter((t) => t.x + TRASH_W > 0);
+
         // Bird physics
         bird.vy += GRAVITY;
         bird.y += bird.vy;
@@ -293,6 +357,7 @@
         ctx.clearRect(0, 0, GAME_W, GAME_H);
         drawBackground();
         pipes.forEach(drawPipe);
+        drawTrashItems();
         drawFish();
         drawScore();
       }
