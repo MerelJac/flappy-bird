@@ -13,7 +13,7 @@
     <!-- ── Start Screen ── -->
     <div id="start-screen" class="screen active">
       <div class="logo-placeholder">Salmon Run</div>
-      <div class=""><img src="./salmon.png" alt="Salmon"></div>
+      <div class=""><img src="./salmon.png" alt="Salmon" /></div>
       <p class="tap-hint">Try to avoid fishing nets and other obstacles!</p>
       <button class="btn btn-start" id="btn-start">Play</button>
     </div>
@@ -58,8 +58,8 @@
       const canvas = document.getElementById("game-canvas");
       const ctx = canvas.getContext("2d");
 
-      const GAME_W = 360; // logical width (portrait-ish)
-      const GAME_H = 640;
+      const GAME_W = 1000; // logical width (portrait-ish)
+      const GAME_H = 1000;
 
       function resizeCanvas() {
         const scaleX = window.innerWidth / GAME_W;
@@ -84,7 +84,7 @@
       const NET_H = 35; // height of the net at the ocean floor
       const BOAT_W = 80;
       const BOAT_H = 50;
-      const OCEAN_TOP = Math.round(GAME_H * 0.2); // ocean surface = 20% down the page
+      const OCEAN_TOP = Math.round(GAME_H * 0.43); // white water-surface line in background.png
       const TRASH_W = 32;
       const TRASH_H = 32;
       const TRASH_INTERVAL = 55; // frames between trash spawns
@@ -181,17 +181,15 @@
 
       // ── Drawing helpers ────────────────────────────────────────────────────────
       function drawBackground() {
-        // Above water (sky)
-        ctx.fillStyle = COLOR.sky;
-        ctx.fillRect(0, 0, GAME_W, OCEAN_TOP);
-
-        // Ocean water
-        ctx.fillStyle = "#1a6fa8";
-        ctx.fillRect(0, OCEAN_TOP, GAME_W, GROUND_Y - OCEAN_TOP);
-
-        // Sand floor (no green strip)
-        ctx.fillStyle = COLOR.ground;
-        ctx.fillRect(0, GROUND_Y, GAME_W, GAME_H - GROUND_Y);
+  {
+          // Fallback while image loads
+          ctx.fillStyle = COLOR.sky;
+          ctx.fillRect(0, 0, GAME_W, OCEAN_TOP);
+          ctx.fillStyle = "#1a6fa8";
+          ctx.fillRect(0, OCEAN_TOP, GAME_W, GROUND_Y - OCEAN_TOP);
+          ctx.fillStyle = COLOR.ground;
+          ctx.fillRect(0, GROUND_Y, GAME_W, GAME_H - GROUND_Y);
+        }
       }
 
       function drawPipe(pipe) {
@@ -225,12 +223,18 @@
         const cols = 5;
         for (let i = 0; i <= cols; i++) {
           const lx = netX + (netW / cols) * i;
-          ctx.beginPath(); ctx.moveTo(lx, netY); ctx.lineTo(lx, GROUND_Y); ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(lx, netY);
+          ctx.lineTo(lx, GROUND_Y);
+          ctx.stroke();
         }
         const rows = 3;
         for (let i = 0; i <= rows; i++) {
           const ly = netY + (NET_H / rows) * i;
-          ctx.beginPath(); ctx.moveTo(netX, ly); ctx.lineTo(netX + netW, ly); ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(netX, ly);
+          ctx.lineTo(netX + netW, ly);
+          ctx.stroke();
         }
         // Net border
         ctx.strokeStyle = "#555";
@@ -241,18 +245,25 @@
       fishImg.src = SALMON;
       const boatImg = new Image();
       boatImg.src = "./boat.png";
-      const trashImg = new Image();
-      trashImg.src = "./trash.png";
+      const bgImg = new Image();
+      bgImg.src = "./background.png";
+      // ── Add more filenames here as you provide images ──
+      const TRASH_SRCS = ["./trash.png", "./trash-2.png", "./trash-3.png"];
+      const trashImgs = TRASH_SRCS.map((src) => {
+        const img = new Image();
+        img.src = src;
+        return img;
+      });
 
       function drawFish() {
         ctx.save();
         ctx.translate(bird.x + bird.w / 2, bird.y + bird.h / 2);
- 
+
         // Tilt up when flapping, nose-down when falling
         const targetAngle = bird.vy < 0 ? -0.4 : Math.min(bird.vy * 0.07, 1.2);
         bird.angle += (targetAngle - bird.angle) * 0.15;
         ctx.rotate(bird.angle);
- 
+
         if (fishImg.complete && fishImg.naturalWidth > 0) {
           // Draw the fish image centred on the bird's position
           ctx.drawImage(fishImg, -bird.w / 2, -bird.h / 2, bird.w, bird.h);
@@ -263,22 +274,18 @@
           ctx.ellipse(0, 0, bird.w / 2, bird.h / 2, 0, 0, Math.PI * 2);
           ctx.fill();
         }
- 
+
         ctx.restore();
       }
 
       function drawTrashItems() {
         for (const t of trashItems) {
-          if (trashImg.complete && trashImg.naturalWidth > 0) {
-            ctx.drawImage(trashImg, t.x, t.y, TRASH_W, TRASH_H);
+          const img = trashImgs[t.imgIdx];
+          if (img.complete && img.naturalWidth > 0) {
+            ctx.drawImage(img, t.x, t.y, TRASH_W, TRASH_H);
           } else {
-            // Fallback: brown rectangle with a T label
             ctx.fillStyle = "#8B4513";
             ctx.fillRect(t.x, t.y, TRASH_W, TRASH_H);
-            ctx.fillStyle = "#fff";
-            ctx.font = "bold 14px Arial";
-            ctx.textAlign = "center";
-            ctx.fillText("T", t.x + TRASH_W / 2, t.y + TRASH_H / 2 + 5);
           }
         }
       }
@@ -315,7 +322,13 @@
 
         // Trash collision
         for (const t of trashItems) {
-          if (bx < t.x + TRASH_W && bx + bw > t.x && by < t.y + TRASH_H && by + bh > t.y) return true;
+          if (
+            bx < t.x + TRASH_W &&
+            bx + bw > t.x &&
+            by < t.y + TRASH_H &&
+            by + bh > t.y
+          )
+            return true;
         }
 
         return false;
@@ -387,7 +400,12 @@
         if (frame % TRASH_INTERVAL === 0) {
           const minY = OCEAN_TOP + 10;
           const maxY = GROUND_Y - NET_H - TRASH_H - 10;
-          trashItems.push({ x: PIPE_SPAWN_X, y: minY + Math.random() * (maxY - minY) });
+          const imgIdx = Math.floor(Math.random() * trashImgs.length);
+          trashItems.push({
+            x: PIPE_SPAWN_X,
+            y: minY + Math.random() * (maxY - minY),
+            imgIdx,
+          });
         }
 
         // Move and cull trash
@@ -403,7 +421,7 @@
 
       function render() {
         ctx.clearRect(0, 0, GAME_W, GAME_H);
-        drawBackground();
+        // drawBackground();
         pipes.forEach(drawPipe);
         drawTrashItems();
         drawFish();
@@ -411,6 +429,23 @@
       }
 
       let animId;
+
+      function togglePause() {
+        if (state === "running") {
+          state = "paused";
+          cancelAnimationFrame(animId);
+          // Draw a pause overlay
+          ctx.fillStyle = "rgba(0,0,0,0.45)";
+          ctx.fillRect(0, 0, GAME_W, GAME_H);
+          ctx.fillStyle = "#fff";
+          ctx.font = "bold 36px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText("PAUSED", GAME_W / 2, GAME_H / 2);
+        } else if (state === "paused") {
+          state = "running";
+          animId = requestAnimationFrame(gameLoop);
+        }
+      }
 
       function startGame() {
         showScreen("game");
@@ -431,6 +466,8 @@
         } else if (state === "countdown") {
           render(); // draw static scene while counting down
           animId = requestAnimationFrame(gameLoop);
+        } else if (state === "paused") {
+          // do nothing — loop is stopped
         } else {
           render();
           endGame();
@@ -449,6 +486,11 @@
       // ── Button wiring ──────────────────────────────────────────────────────────
       document.getElementById("btn-start").addEventListener("click", () => {
         startGame();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "p" || e.key === "P" || e.key === "Escape") togglePause();
+        if (e.key === " " || e.key === "ArrowUp") flap();
       });
 
       document.getElementById("btn-restart").addEventListener("click", () => {

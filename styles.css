@@ -1,192 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    body {
-      background: #1a1a2e;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100dvh;
-      overflow: hidden;
-      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
-      touch-action: none;
-    }
+body {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  overflow: hidden;
+  font-family: 'DM Mono', monospace;
+  touch-action: none;
+}
 
-    /* ── Screens ── */
-    .screen {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      inset: 0;
-    }
-    .screen.active { display: flex; }
+/* ── Screens ── */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+.screen.active {
+  display: flex;
+}
 
-    /* ── Start Screen ── */
-    #start-screen {
-      background: url("/43887da7bd8860d68a8de8ba619d25f3b584a57d.png") center/cover no-repeat;
-      gap: 24px;
-    }
+/* ── Start Screen ── */
+#start-screen {
+  background: url("/43887da7bd8860d68a8de8ba619d25f3b584a57d.png") center/cover
+    no-repeat;
+  gap: 24px;
+}
 
-    .logo-placeholder {
-      width: min(280px, 80vw);
-      height: min(140px, 25vh);
-      background: rgba(255,255,255,0.3);
-      border: 3px dashed rgba(255,255,255,0.7);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1rem;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-    }
+.logo-placeholder {
+  width: min(280px, 80vw);
+  height: min(140px, 25vh);
+  background: rgba(255, 255, 255, 0.3);
+  border: 3px dashed rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
 
-    .tap-hint {
-      font-size: 1.1rem;
-      color: white;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-      animation: pulse 1.4s ease-in-out infinite;
-    }
+.tap-hint {
+  font-size: 1.1rem;
+  color: white;
+  text-align: center;
+  padding-right: 16px;  padding-left: 16px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  animation: pulse 1.4s ease-in-out infinite;
+}
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
 
-    .btn {
-      padding: 14px 48px;
-      border: none;
-      border-radius: 999px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-    .btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.25);
-    }
+.btn {
+  padding: 14px 48px;
+  border: none;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s;
+}
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
 
-    .btn-start {
-      background: #f7b731;
-      color: #4a2800;
-    }
+.btn-start {
+  background: #f7b731;
+  color: #4a2800;
+}
 
-    /* ── Game Screen ── */
-    #game-screen {
-      background: transparent;
-    }
+/* ── Game Screen ── */
+#game-screen {
+  background: url('/background.png') center/cover no-repeat;
+}
 
-    canvas {
-      display: block;
-      /* size set by JS */
-      image-rendering: pixelated;
-    }
+canvas {
+  display: block;
+  /* size set by JS */
+  image-rendering: pixelated;
+}
 
-    #score-display {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: clamp(2rem, 8vw, 3.5rem);
-      color: white;
-      text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
-      pointer-events: none;
-      z-index: 10;
-    }
+#score-display {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  color: white;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 10;
+}
 
-    #info-display {
-      position: absolute;
-      top: 20px;
-      left: 16px;
-      max-width: 130px;
-      font-size: 0.7rem;
-      line-height: 1.35;
-      color: white;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
-      pointer-events: none;
-      z-index: 10;
-      opacity: 1;
-      transition: opacity 0.4s ease;
-    }
-    #info-display.fade {
-      opacity: 0;
-    }
+#info-display {
+  position: absolute;
+  top: 20px;
+  left: 16px;
+  padding: 10px;
+  border-radius: 26px;
+  max-width: 40vw;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: black;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 10;
+  opacity: 1;
+  background-color: white;
+  transition: opacity 0.4s ease;
+  border: 1px solid #000000;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-style: Medium;
+  line-height: 100%;
+  letter-spacing: 2%;
 
-    /* ── End Screen ── */
-    #end-screen {
-      background: url("/43887da7bd8860d68a8de8ba619d25f3b584a57d.png") center/cover no-repeat;
-      gap: 20px;
-    }
+  vertical-align: middle;
+}
+#info-display.fade {
+  opacity: 0;
+}
 
-    .end-panel {
-      background: rgba(255,255,255,0.85);
-      border-radius: 20px;
-      padding: 28px 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      width: min(320px, 88vw);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }
+/* ── End Screen ── */
+#end-screen {
+  background: #465865;
+  gap: 20px;
+}
 
-    .end-title {
-      font-size: 2rem;
-      color: #e55;
-      text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
-    }
+.end-panel {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  padding: 28px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(320px, 88vw);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
 
-    .score-label {
-      font-size: 0.95rem;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+.end-title {
+  font-size: 2rem;
+  color: #A05752;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+}
 
-          #countdown-display { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 96px; font-weight: 900; color: #fff; text-shadow: 3px 3px 0 #000; z-index: 20; pointer-events: none; opacity: 0; }
+.score-label {
+  font-size: 0.95rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
-    .score-value {
-      font-size: 3rem;
-      color: #333;
-      line-height: 1;
-    }
+#countdown-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 96px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 3px 3px 0 #000;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+}
 
-    .best-value {
-      font-size: 1.4rem;
-      color: #f7b731;
-    }
+.score-value {
+  font-size: 3rem;
+  color: #333;
+  line-height: 1;
+}
 
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: #ddd;
-    }
+.best-value {
+  font-size: 1.4rem;
+  color: #f7b731;
+}
 
-    .medal-placeholder {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: rgba(255,215,0,0.3);
-      border: 3px dashed gold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.6rem;
-      color: #9a7000;
-    }
+.divider {
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+}
 
-    .btn-restart {
-      background: #4cbe6c;
-      color: white;
-    }
+.medal-placeholder {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.3);
+  border: 3px dashed gold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  color: #9a7000;
+}
+
+.btn-restart {
+  background: #4cbe6c;
+  color: white;
+}
