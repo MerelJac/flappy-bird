@@ -112,7 +112,7 @@ canvas {
   padding: 10px;
   border-radius: 26px;
   max-width: 40vw;
-  font-size: 0.7rem;
+  font-size: 1rem;
   line-height: 1.35;
   color: black;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
@@ -138,7 +138,7 @@ canvas {
   padding: 10px;
   border-radius: 26px;
   max-width: 40vw;
-  font-size: 0.7rem;
+  font-size: 1rem;
   line-height: 1.35;
   color: black;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
@@ -181,6 +181,7 @@ canvas {
 .end-title {
   font-size: 2rem;
   color: #A05752;
+  text-align: center;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
 }
 
@@ -222,9 +223,7 @@ canvas {
   background: #ddd;
 }
 
-.medal-placeholder {
-  width: 70px;
-  height: 70px;
+.info-placeholder {
   border-radius: 50%;
   background: rgba(255, 215, 0, 0.3);
   border: 3px dashed gold;
@@ -233,6 +232,25 @@ canvas {
   justify-content: center;
   font-size: 0.6rem;
   color: #9a7000;
+    padding: 10px;
+  border-radius: 26px;
+  max-width: 40vw;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: black;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 10;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  border: 1px solid #000000;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-style: Medium;
+  line-height: 100%;
+  letter-spacing: 2%;
+
+  vertical-align: middle;
 }
 
 .btn-restart {

@@ -29,8 +29,8 @@
     <!-- ── End Screen ── -->
     <div id="end-screen" class="screen">
       <div class="end-panel">
-        <div class="end-title">Game Over</div>
-        <div class="medal-placeholder">Medal</div>
+        <div class="end-title">You got caught</div>
+        <div class="info-placeholder">Fun Facts</div>
         <div class="divider"></div>
         <div class="score-label">Score</div>
         <div class="score-value" id="final-score">0</div>
@@ -39,9 +39,26 @@
         <div class="best-value" id="best-score">0</div>
       </div>
       <button class="btn btn-restart" id="btn-restart">Play Again</button>
+      <button class="btn btn-copy" id="btn-copy">Share Link</button>
+      <button class="btn btn-learn" id="btn-learn">Learn More</button>
     </div>
 
     <script>
+      const END_FACTS = [
+        "8 million tonnes of plastic enter the ocean every year.",
+        "Salmon can detect their home river by smell alone.",
+        "Ghost nets account for 46% of the Great Pacific Garbage Patch.",
+        "Pacific salmon die after spawning — feeding the whole forest.",
+        "A single plastic bag can kill sea turtles who mistake it for jellyfish.",
+        "Salmon navigate using Earth's magnetic field.",
+        "Ocean plastic harms over 700 marine species.",
+        "Farmed salmon are fed wild-caught fish, straining ocean stocks.",
+        "Microplastics have been found in salmon tissue worldwide.",
+        "Healthy salmon runs bring vital nutrients from sea to land.",
+        "It takes 450 years for a plastic bottle to decompose at sea.",
+        "Salmon can leap up to 3.5 metres to climb waterfalls.",
+      ];
+
       // ── Screen management ──────────────────────────────────────────────────────
       const screens = {
         start: document.getElementById("start-screen"),
@@ -79,7 +96,7 @@
       const PIPE_GAP = 160;
       const PIPE_WIDTH = 52;
       const PIPE_SPAWN_X = () => GAME_W + 60;
-      const PIPE_INTERVAL = 90; // frames
+      const BOAT_INTERVAL = 180; // frames
       const NET_H = 35; // height of the net at the ocean floor
       const BOAT_W = 140;
       const BOAT_H = 90;
@@ -180,7 +197,7 @@
 
       // ── Drawing helpers ────────────────────────────────────────────────────────
       function drawBackground() {
-  {
+        {
           // Fallback while image loads
           ctx.fillStyle = COLOR.sky;
           ctx.fillRect(0, 0, GAME_W, OCEAN_TOP());
@@ -379,7 +396,7 @@
         frame++;
 
         // Spawn pipes
-        if (frame % PIPE_INTERVAL === 0) {
+        if (frame % BOAT_INTERVAL === 0) {
           pipes.push({ x: PIPE_SPAWN_X(), topH: OCEAN_TOP(), scored: false });
         }
 
@@ -479,6 +496,8 @@
         if (score > bestScore) bestScore = score;
         document.getElementById("final-score").textContent = score;
         document.getElementById("best-score").textContent = bestScore;
+        document.querySelector(".info-placeholder").textContent =
+          END_FACTS[Math.floor(Math.random() * END_FACTS.length)];
         setTimeout(() => showScreen("end"), 600);
       }
 
