@@ -58,17 +58,16 @@
       const canvas = document.getElementById("game-canvas");
       const ctx = canvas.getContext("2d");
 
-      const GAME_W = 1000; // logical width (portrait-ish)
-      const GAME_H = 1000;
+      let GAME_W = window.innerWidth;
+      let GAME_H = window.innerHeight;
 
       function resizeCanvas() {
-        const scaleX = window.innerWidth / GAME_W;
-        const scaleY = window.innerHeight / GAME_H;
-        const scale = Math.min(scaleX, scaleY);
+        GAME_W = window.innerWidth;
+        GAME_H = window.innerHeight;
         canvas.width = GAME_W;
         canvas.height = GAME_H;
-        canvas.style.width = `${GAME_W * scale}px`;
-        canvas.style.height = `${GAME_H * scale}px`;
+        canvas.style.width = `${GAME_W}px`;
+        canvas.style.height = `${GAME_H}px`;
       }
       resizeCanvas();
       window.addEventListener("resize", resizeCanvas);
@@ -79,12 +78,12 @@
       const PIPE_SPEED = 3;
       const PIPE_GAP = 160;
       const PIPE_WIDTH = 52;
-      const PIPE_SPAWN_X = GAME_W + 60;
+      const PIPE_SPAWN_X = () => GAME_W + 60;
       const PIPE_INTERVAL = 90; // frames
       const NET_H = 35; // height of the net at the ocean floor
       const BOAT_W = 80;
       const BOAT_H = 50;
-      const OCEAN_TOP = Math.round(GAME_H * 0.43); // white water-surface line in background.png
+      const OCEAN_TOP = () => Math.round(GAME_H * 0.43); // white water-surface line in background.png
       const TRASH_W = 32;
       const TRASH_H = 32;
       const TRASH_INTERVAL = 55; // frames between trash spawns
@@ -184,11 +183,11 @@
   {
           // Fallback while image loads
           ctx.fillStyle = COLOR.sky;
-          ctx.fillRect(0, 0, GAME_W, OCEAN_TOP);
+          ctx.fillRect(0, 0, GAME_W, OCEAN_TOP());
           ctx.fillStyle = "#1a6fa8";
-          ctx.fillRect(0, OCEAN_TOP, GAME_W, GROUND_Y - OCEAN_TOP);
+          ctx.fillRect(0, OCEAN_TOP(), GAME_W, GROUND_Y() - OCEAN_TOP());
           ctx.fillStyle = COLOR.ground;
-          ctx.fillRect(0, GROUND_Y, GAME_W, GAME_H - GROUND_Y);
+          ctx.fillRect(0, GROUND_Y(), GAME_W, GAME_H - GROUND_Y());
         }
       }
 
@@ -207,14 +206,14 @@
         const wireX = pipe.x + PIPE_WIDTH / 2;
         ctx.beginPath();
         ctx.moveTo(wireX, pipe.topH);
-        ctx.lineTo(wireX, GROUND_Y - NET_H);
+        ctx.lineTo(wireX, GROUND_Y() - NET_H);
         ctx.strokeStyle = "#aaaaaa";
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
         // Net at ocean floor
         const netX = pipe.x - 4;
-        const netY = GROUND_Y - NET_H;
+        const netY = GROUND_Y() - NET_H;
         const netW = PIPE_WIDTH + 8;
 
         // Grid lines
@@ -225,7 +224,7 @@
           const lx = netX + (netW / cols) * i;
           ctx.beginPath();
           ctx.moveTo(lx, netY);
-          ctx.lineTo(lx, GROUND_Y);
+          ctx.lineTo(lx, GROUND_Y());
           ctx.stroke();
         }
         const rows = 3;
@@ -295,7 +294,7 @@
       }
 
       // ── Collision ──────────────────────────────────────────────────────────────
-      const GROUND_Y = GAME_H - 80;
+      const GROUND_Y = () => Math.round(GAME_H * 0.88);
       const MARGIN = 4; // pixel forgiveness
 
       function checkCollision() {
@@ -305,7 +304,7 @@
         const bh = bird.h - MARGIN * 2;
 
         // Ground / ceiling
-        if (bird.y + bird.h >= GROUND_Y || bird.y <= OCEAN_TOP) return true;
+        if (bird.y + bird.h >= GROUND_Y() || bird.y <= OCEAN_TOP()) return true;
 
         for (const p of pipes) {
           // Top pipe (boat) collision
@@ -315,7 +314,7 @@
           // Net collision (wire is passable — only the net at the floor is deadly)
           const netX = p.x - 4;
           const netW = PIPE_WIDTH + 8;
-          const netY = GROUND_Y - NET_H;
+          const netY = GROUND_Y() - NET_H;
           const inNetX = bx < netX + netW && bx + bw > netX;
           if (inNetX && by + bh > netY) return true;
         }
@@ -381,7 +380,7 @@
 
         // Spawn pipes
         if (frame % PIPE_INTERVAL === 0) {
-          pipes.push({ x: PIPE_SPAWN_X, topH: OCEAN_TOP, scored: false });
+          pipes.push({ x: PIPE_SPAWN_X(), topH: OCEAN_TOP(), scored: false });
         }
 
         // Move pipes
@@ -398,11 +397,11 @@
 
         // Spawn trash at random heights within the water column
         if (frame % TRASH_INTERVAL === 0) {
-          const minY = OCEAN_TOP + 10;
-          const maxY = GROUND_Y - NET_H - TRASH_H - 10;
+          const minY = OCEAN_TOP() + 10;
+          const maxY = GROUND_Y() - NET_H - TRASH_H - 10;
           const imgIdx = Math.floor(Math.random() * trashImgs.length);
           trashItems.push({
-            x: PIPE_SPAWN_X,
+            x: PIPE_SPAWN_X(),
             y: minY + Math.random() * (maxY - minY),
             imgIdx,
           });

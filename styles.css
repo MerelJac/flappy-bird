@@ -34,8 +34,7 @@ body {
 
 /* ── Start Screen ── */
 #start-screen {
-  background: url("/43887da7bd8860d68a8de8ba619d25f3b584a57d.png") center/cover
-    no-repeat;
+  background: #465865;
   gap: 24px;
 }
 
@@ -97,7 +96,7 @@ body {
 
 /* ── Game Screen ── */
 #game-screen {
-  background: url('/background.png') center/cover no-repeat;
+  background: url('/background.png') bottom no-repeat;
 }
 
 canvas {
@@ -107,15 +106,29 @@ canvas {
 }
 
 #score-display {
-  position: absolute;
+ position: absolute;
   top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: clamp(2rem, 8vw, 3.5rem);
-  color: white;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+  right: 16px;
+  padding: 10px;
+  border-radius: 26px;
+  max-width: 40vw;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: black;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
   pointer-events: none;
   z-index: 10;
+  opacity: 1;
+  background-color: white;
+  transition: opacity 0.4s ease;
+  border: 1px solid #000000;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-style: Medium;
+  line-height: 100%;
+  letter-spacing: 2%;
+
+  vertical-align: middle;
 }
 
 #info-display {
