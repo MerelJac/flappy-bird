@@ -81,9 +81,9 @@
       const PIPE_SPAWN_X = () => GAME_W + 60;
       const PIPE_INTERVAL = 90; // frames
       const NET_H = 35; // height of the net at the ocean floor
-      const BOAT_W = 80;
-      const BOAT_H = 50;
-      const OCEAN_TOP = () => Math.round(GAME_H * 0.43); // white water-surface line in background.png
+      const BOAT_W = 140;
+      const BOAT_H = 90;
+      const OCEAN_TOP = () => Math.round(GAME_H * 0.25);
       const TRASH_W = 32;
       const TRASH_H = 32;
       const TRASH_INTERVAL = 55; // frames between trash spawns
@@ -157,7 +157,7 @@
       function resetGame() {
         // 'countdown' | 'running' | 'dead'
         state = "countdown";
-        bird = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 38, h: 28, angle: 0 };
+        bird = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 70, h: 52, angle: 0 };
         pipes = [];
         trashItems = [];
         score = 0;
