@@ -100,7 +100,7 @@
       const NET_H = 35; // height of the net at the ocean floor
       const BOAT_W = 140;
       const BOAT_H = 90;
-      const OCEAN_TOP = () => Math.round(GAME_H * 0.25);
+      const OCEAN_TOP = () => BOAT_H; // sky zone exactly fits the boat
       const TRASH_W = 32;
       const TRASH_H = 32;
       const TRASH_INTERVAL = 55; // frames between trash spawns
@@ -197,15 +197,15 @@
 
       // ── Drawing helpers ────────────────────────────────────────────────────────
       function drawBackground() {
-        {
-          // Fallback while image loads
-          ctx.fillStyle = COLOR.sky;
-          ctx.fillRect(0, 0, GAME_W, OCEAN_TOP());
-          ctx.fillStyle = "#1a6fa8";
-          ctx.fillRect(0, OCEAN_TOP(), GAME_W, GROUND_Y() - OCEAN_TOP());
-          ctx.fillStyle = COLOR.ground;
-          ctx.fillRect(0, GROUND_Y(), GAME_W, GAME_H - GROUND_Y());
-        }
+        // Above water — sized to fit the boat
+        ctx.fillStyle = COLOR.sky;
+        ctx.fillRect(0, 0, GAME_W, OCEAN_TOP());
+        // Ocean water
+        ctx.fillStyle = "#1a6fa8";
+        ctx.fillRect(0, OCEAN_TOP(), GAME_W, GROUND_Y() - OCEAN_TOP());
+        // Sand floor
+        ctx.fillStyle = COLOR.ground;
+        ctx.fillRect(0, GROUND_Y(), GAME_W, GAME_H - GROUND_Y());
       }
 
       function drawPipe(pipe) {
@@ -261,8 +261,6 @@
       fishImg.src = SALMON;
       const boatImg = new Image();
       boatImg.src = "./boat.png";
-      const bgImg = new Image();
-      bgImg.src = "./background.png";
       // ── Add more filenames here as you provide images ──
       const TRASH_SRCS = ["./trash.png", "./trash-2.png", "./trash-3.png"];
       const trashImgs = TRASH_SRCS.map((src) => {
@@ -437,7 +435,7 @@
 
       function render() {
         ctx.clearRect(0, 0, GAME_W, GAME_H);
-        // drawBackground();
+        drawBackground();
         pipes.forEach(drawPipe);
         drawTrashItems();
         drawFish();

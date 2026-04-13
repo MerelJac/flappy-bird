@@ -41,14 +41,12 @@ body {
 .logo-placeholder {
   width: min(280px, 80vw);
   height: min(140px, 25vh);
-  background: rgba(255, 255, 255, 0.3);
-  border: 3px dashed rgba(255, 255, 255, 0.7);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 1rem;
+  color: #CCB47C;
+  font-size: 2rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
 }
 
@@ -90,13 +88,13 @@ body {
 }
 
 .btn-start {
-  background: #f7b731;
+  background: #CCB47C;
   color: #4a2800;
 }
 
 /* ── Game Screen ── */
 #game-screen {
-  background: url('/background.png') bottom no-repeat;
+  background: none;
 }
 
 canvas {
@@ -179,7 +177,7 @@ canvas {
 }
 
 .end-title {
-  font-size: 2rem;
+  font-size: 1rem;
   color: #A05752;
   text-align: center;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
@@ -207,7 +205,7 @@ canvas {
 }
 
 .score-value {
-  font-size: 3rem;
+  font-size: 2rem;
   color: #333;
   line-height: 1;
 }
@@ -228,13 +226,13 @@ canvas {
   background: rgba(255, 215, 0, 0.3);
   border: 3px dashed gold;
   display: flex;
+  text-align: center;
   align-items: center;
   justify-content: center;
   font-size: 0.6rem;
   color: #9a7000;
     padding: 10px;
   border-radius: 26px;
-  max-width: 40vw;
   font-size: 1rem;
   line-height: 1.35;
   color: black;
