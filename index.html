@@ -181,7 +181,8 @@
       }
       function stopInfoRotation() {
         clearTimeout(infoTimeout);
-        infoEl.textContent = "";
+        // Hide it when game ends
+         infoEl.classList.add("fade");
       }
 
       let state,
