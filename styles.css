@@ -158,8 +158,8 @@ canvas {
   opacity: 0;
 }
 
-/* ── End Screen ── */
-#end-screen {
+/* ──  Screen ── */
+#end-screen, #win-screen {
   background: #465865;
   gap: 20px;
 }
