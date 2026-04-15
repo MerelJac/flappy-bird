@@ -123,7 +123,7 @@
       const PIPE_WIDTH = 52;
       const PIPE_SPAWN_X = () => GAME_W + 60;
       const BOAT_INTERVAL = 180;
-      const NET_H = 55;
+      const NET_H = 75;
       const BOAT_W = 140;
       const BOAT_H = 120;
       const OCEAN_TOP = () => BOAT_H;
@@ -354,7 +354,10 @@
         const netY = GROUND_Y() - NET_H;
         const netW = PIPE_WIDTH + 8;
         if (netImg.complete && netImg.naturalWidth > 0) {
-          ctx.drawImage(netImg, netX, netY, netW, NET_H);
+          const aspectRatio = netImg.naturalWidth / netImg.naturalHeight;
+          const drawW = NET_H * aspectRatio;
+          const drawX = wireX - drawW;
+          ctx.drawImage(netImg, drawX, netY, drawW, NET_H);
         }
       }
 
