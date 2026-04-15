@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Jersey+10&display=swap");
 
 * {
   margin: 0;
@@ -13,7 +14,7 @@ body {
   align-items: center;
   height: 100dvh;
   overflow: hidden;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   touch-action: none;
 }
 
@@ -34,7 +35,9 @@ body {
 
 /* ── Start Screen ── */
 #start-screen {
-  background: #465865;
+  background:
+    linear-gradient(180deg, #80c7e5 0%, #82c9e7 49.52%, #5f98c2 100%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.14));
   gap: 24px;
 }
 
@@ -45,18 +48,59 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #CCB47C;
+  color: #ccb47c;
   font-size: 2rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
 }
 
+.image-stack {
+  position: relative;
+  width: 300px; /* set your size */
+  height: 300px;
+}
+
+.image-stack img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-stack img:first-child {
+  z-index: 1;
+}
+.image-stack img:last-child {
+  z-index: 2;
+}
 .tap-hint {
-  font-size: 1.1rem;
-  color: white;
+  color: #FFFFFF;
+  text-shadow: 0px 4px 0px #42425F;
+  max-width: 50%;
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-size: 75px;
+  line-height: 75px;
+  letter-spacing: 0.02em;
   text-align: center;
-  padding-right: 16px;  padding-left: 16px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  vertical-align: middle;
   animation: pulse 1.4s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .tap-hint {
+    font-size: 48px;
+    line-height: 48px;
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 480px) {
+  .tap-hint {
+    font-size: 36px;
+    line-height: 36px;
+    max-width: 90%;
+  }
 }
 
 @keyframes pulse {
@@ -71,30 +115,34 @@ body {
 
 .btn {
   padding: 14px 48px;
-  border: none;
-  border-radius: 999px;
   font-size: 1.2rem;
-  font-weight: bold;
+  font-weight: 400;
   cursor: pointer;
-  letter-spacing: 1px;
+  letter-spacing: 0.1em;
+  font-family: 'Jersey 10', sans-serif;
+  border: 3px solid white;
+  outline: 3px solid black;
   box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
-  transition:
-    transform 0.1s,
-    box-shadow 0.1s;
+  transition: transform 0.1s, box-shadow 0.1s;
 }
+
 .btn:active {
   transform: translateY(3px);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
 }
 
 .btn-start {
-  background: #CCB47C;
-  color: #4a2800;
+  background: #E55A0F;
+  color: white;
+  line-height: 20px;
+  text-align: center;
+  text-transform: uppercase;
 }
-
 /* ── Game Screen ── */
 #game-screen {
-  background: none;
+   background:
+    linear-gradient(180deg, #80c7e5 0%, #82c9e7 49.52%, #5f98c2 100%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.14));
 }
 
 canvas {
@@ -104,7 +152,7 @@ canvas {
 }
 
 #score-display {
- position: absolute;
+  position: absolute;
   top: 20px;
   right: 16px;
   padding: 10px;
@@ -120,7 +168,7 @@ canvas {
   background-color: white;
   transition: opacity 0.4s ease;
   border: 1px solid #000000;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   font-weight: 500;
   font-style: Medium;
   line-height: 100%;
@@ -146,7 +194,7 @@ canvas {
   background-color: white;
   transition: opacity 0.4s ease;
   border: 1px solid #000000;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   font-weight: 500;
   font-style: Medium;
   line-height: 100%;
@@ -159,8 +207,11 @@ canvas {
 }
 
 /* ──  Screen ── */
-#end-screen, #win-screen {
-  background: #465865;
+#end-screen,
+#win-screen {
+  background:
+    linear-gradient(180deg, #80c7e5 0%, #82c9e7 49.52%, #5f98c2 100%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.14));
   gap: 20px;
 }
 
@@ -178,7 +229,7 @@ canvas {
 
 .end-title {
   font-size: 1rem;
-  color: #A05752;
+  color: #a05752;
   text-align: center;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
 }
@@ -206,7 +257,9 @@ canvas {
 
 #finish-ribbon {
   position: absolute;
-  top: 0; bottom: 0; right: -100%;
+  top: 0;
+  bottom: 0;
+  right: -100%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -217,12 +270,20 @@ canvas {
   z-index: 20;
   transition: right 1s cubic-bezier(0.22, 1, 0.36, 1);
 }
-#finish-ribbon.visible { right: 0; }
+#finish-ribbon.visible {
+  right: 0;
+}
 
 .ribbon-tape {
   width: 100%;
   height: 40px;
-  background: repeating-linear-gradient(90deg, #fff 0px, #fff 28px, #e63946 28px, #e63946 56px);
+  background: repeating-linear-gradient(
+    90deg,
+    #fff 0px,
+    #fff 28px,
+    #e63946 28px,
+    #e63946 56px
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -235,7 +296,7 @@ canvas {
   font-weight: 700;
   letter-spacing: 3px;
   color: #fff;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 .ribbon-emoji-row {
   font-size: 26px;
@@ -246,7 +307,9 @@ canvas {
 #timer-display.pulse {
   transform: scale(1.4);
   color: #ffd166;
-  transition: transform 0.1s, color 0.1s;
+  transition:
+    transform 0.1s,
+    color 0.1s;
 }
 
 .score-value {
@@ -276,7 +339,7 @@ canvas {
   justify-content: center;
   font-size: 0.6rem;
   color: #9a7000;
-    padding: 10px;
+  padding: 10px;
   border-radius: 26px;
   font-size: 1rem;
   line-height: 1.35;
@@ -287,7 +350,7 @@ canvas {
   opacity: 1;
   transition: opacity 0.4s ease;
   border: 1px solid #000000;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   font-weight: 500;
   font-style: Medium;
   line-height: 100%;

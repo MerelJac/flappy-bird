@@ -12,8 +12,12 @@
   <body>
     <!-- ── Start Screen ── -->
     <div id="start-screen" class="screen active">
-      <div class="logo-placeholder">Salmon Run</div>
-      <div class=""><img src="./salmon.png" alt="Salmon" /></div>
+      <div class="image-stack">
+        <img src="title.png" />
+        <!-- behind -->
+        <img src="title-fish.png" />
+        <!-- in front -->
+      </div>
       <p class="tap-hint">Try to avoid fishing nets and other obstacles!</p>
       <button class="btn btn-start" id="btn-start">Play</button>
     </div>
@@ -182,7 +186,7 @@
       function stopInfoRotation() {
         clearTimeout(infoTimeout);
         // Hide it when game ends
-         infoEl.classList.add("fade");
+        infoEl.classList.add("fade");
       }
 
       let state,
@@ -421,7 +425,6 @@
         const elapsed = (Date.now() - gameStartTime) / 1000;
         const remaining = Math.max(0, Math.ceil(GAME_RUNTIME - elapsed));
 
-
         if (remaining !== lastRemainingTick) {
           lastRemainingTick = remaining;
         }
@@ -433,7 +436,6 @@
           pipes = pipes.filter((p) => p.x < ribbon.x);
           trashItems = trashItems.filter((t) => t.x < ribbon.x);
         }
-
 
         // Move ribbon with the world
         if (ribbon) ribbon.x -= PIPE_SPEED;
