@@ -357,7 +357,16 @@
           const aspectRatio = netImg.naturalWidth / netImg.naturalHeight;
           const drawW = NET_H * aspectRatio;
           const drawX = wireX - drawW;
-          ctx.drawImage(netImg, drawX, netY, drawW, NET_H);
+          // Reveal the net right-edge-first as it enters from the right
+          const visibleW = Math.min(drawW, GAME_W - drawX);
+          if (visibleW > 0) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(wireX - visibleW, netY, visibleW, NET_H);
+            ctx.clip();
+            ctx.drawImage(netImg, drawX, netY, drawW, NET_H);
+            ctx.restore();
+          }
         }
       }
 

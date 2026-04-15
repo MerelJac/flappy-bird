@@ -54,7 +54,7 @@ body {
 }
 
 .logo-div {
-  max-width: 90vw;
+  max-width: 500px;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -78,7 +78,7 @@ body {
   max-width: 50%;
   font-family: "Jersey 10", sans-serif;
   font-weight: 400;
-  font-size: 75px;
+  font-size: 50px;
   line-height: 75px;
   letter-spacing: 0.02em;
   text-align: center;
@@ -87,6 +87,9 @@ body {
 }
 
 @media (max-width: 768px) {
+  .logo-div {
+    max-width: 300px;
+  }
   .tap-hint {
     font-size: 48px;
     line-height: 48px;
@@ -336,7 +339,6 @@ canvas {
 }
 
 .info-placeholder {
-  border-radius: 50%;
   background: rgba(255, 215, 0, 0.3);
   border: 3px dashed gold;
   display: flex;
@@ -346,7 +348,6 @@ canvas {
   font-size: 0.6rem;
   color: #9a7000;
   padding: 10px;
-  border-radius: 26px;
   font-size: 1rem;
   line-height: 1.35;
   color: black;
