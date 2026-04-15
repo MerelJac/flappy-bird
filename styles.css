@@ -67,6 +67,12 @@ body {
   object-fit: cover;
 }
 
+#countdown-display {
+  font-family: 'Jersey 10', sans-serif;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1);
+}
+
 .image-stack img:first-child {
   z-index: 1;
 }
@@ -228,7 +234,8 @@ canvas {
 }
 
 .end-title {
-  font-size: 1rem;
+  font-size: 3rem;
+  font-family: 'Jersey 10', sans-serif;
   color: #a05752;
   text-align: center;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
@@ -302,14 +309,6 @@ canvas {
   font-size: 26px;
   display: flex;
   gap: 10px;
-}
-
-#timer-display.pulse {
-  transform: scale(1.4);
-  color: #ffd166;
-  transition:
-    transform 0.1s,
-    color 0.1s;
 }
 
 .score-value {

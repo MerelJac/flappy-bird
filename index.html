@@ -26,7 +26,6 @@
     <div id="game-screen" class="screen">
       <div id="info-display"></div>
       <div id="score-display">0</div>
-      <div id="timer-display">30s</div>
       <div id="countdown-display"></div>
       <div id="finish-ribbon">
         <div class="ribbon-emoji-row">🎉🏆🎉🏆🎉🏆🎉</div>
@@ -71,9 +70,9 @@
         <div class="score-label">Best</div>
         <div class="best-value" id="win-best-score">0</div>
       </div>
-      <button class="btn btn-restart" id="btn-restart">Play Again</button>
-      <button class="btn btn-copy" id="btn-copy">Share Link</button>
-      <button class="btn btn-learn" id="btn-learn">Learn More</button>
+      <button class="btn btn-restart" id="btn-restart-win">Play Again</button>
+      <button class="btn btn-copy" id="btn-copy-win">Share Link</button>
+      <button class="btn btn-learn" id="btn-learn-win">Learn More</button>
     </div>
 
     <script>
@@ -559,7 +558,7 @@
 
       document.getElementById("btn-start").addEventListener("click", startGame);
       document
-        .getElementById("btn-restart")
+        .getElementsByClassName("btn-restart")
         .addEventListener("click", startGame);
       document
         .getElementById("btn-win-restart")
