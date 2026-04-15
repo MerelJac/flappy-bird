@@ -125,7 +125,7 @@
       const PIPE_WIDTH = 52;
       const PIPE_SPAWN_X = () => GAME_W + 60;
       const BOAT_INTERVAL = 180;
-      const NET_H = 35;
+      const NET_H = 55;
       const BOAT_W = 140;
       const BOAT_H = 120;
       const OCEAN_TOP = () => BOAT_H;
@@ -141,7 +141,6 @@
       const RIBBON_W = 18;
 
       const COLOR = {
-        sky: "#87ceeb",
         ground: "#c8a96e",
         pipe: "#5ec25e",
         pipeBorder: "#3a8a3a",
@@ -224,54 +223,70 @@
 
       const GROUND_Y = () => Math.round(GAME_H * 0.88);
 
-      function drawBackground() {
-        ctx.fillStyle = COLOR.sky;
-        ctx.fillRect(0, 0, GAME_W, OCEAN_TOP());
-        ctx.fillStyle = "#1a6fa8";
-        ctx.fillRect(0, OCEAN_TOP(), GAME_W, GROUND_Y() - OCEAN_TOP());
-        ctx.fillStyle = COLOR.ground;
-        ctx.fillRect(0, GROUND_Y(), GAME_W, GAME_H - GROUND_Y());
+    function drawBackground() {
+        if (skyImg.complete && skyImg.naturalWidth > 0) {
+          ctx.drawImage(skyImg, 0, 0, GAME_W, OCEAN_TOP());
+        } else {
+
+          ctx.fillRect(0, 0, GAME_W, OCEAN_TOP());
+        }
+        const oceanTop = OCEAN_TOP();
+        const oceanH = GROUND_Y() - oceanTop;
+        const oceanGrad = ctx.createLinearGradient(
+          0,
+          oceanTop,
+          0,
+          oceanTop + oceanH,
+        );
+        oceanGrad.addColorStop(0, "#80c7e5");
+        oceanGrad.addColorStop(0.4952, "#82c9e7");
+        oceanGrad.addColorStop(1, "#5f98c2");
+        ctx.fillStyle = oceanGrad;
+        ctx.fillRect(0, oceanTop, GAME_W, oceanH);
+        // white overlay at 14% opacity
+        ctx.fillStyle = "rgba(255,255,255,0.14)";
+        ctx.fillRect(0, oceanTop, GAME_W, oceanH);
+        if (seaFloorImg.complete && seaFloorImg.naturalWidth > 0) {
+          ctx.drawImage(
+            seaFloorImg,
+            0,
+            GROUND_Y(),
+            GAME_W,
+            GAME_H - GROUND_Y(),
+          );
+        } else {
+          ctx.fillStyle = COLOR.ground;
+          ctx.fillRect(0, GROUND_Y(), GAME_W, GAME_H - GROUND_Y());
+        }
       }
 
-      function drawPipe(pipe) {
-        const boatX = pipe.x + PIPE_WIDTH / 2 - BOAT_W / 2;
-        const boatY = pipe.topH - BOAT_H;
-        if (boatImg.complete && boatImg.naturalWidth > 0) {
-          ctx.drawImage(boatImg, boatX, boatY, BOAT_W, BOAT_H);
-        } else {
-          ctx.fillStyle = COLOR.pipe;
-          ctx.fillRect(pipe.x - 4, boatY, PIPE_WIDTH + 8, BOAT_H);
-        }
-        const wireX = pipe.x + PIPE_WIDTH / 2;
-        ctx.beginPath();
-        ctx.moveTo(wireX, pipe.topH);
-        ctx.lineTo(wireX, GROUND_Y() - NET_H);
-        ctx.strokeStyle = "#aaaaaa";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        const netX = pipe.x - 4,
-          netY = GROUND_Y() - NET_H,
-          netW = PIPE_WIDTH + 8;
-        ctx.strokeStyle = "#777";
-        ctx.lineWidth = 1;
-        for (let i = 0; i <= 5; i++) {
-          const lx = netX + (netW / 5) * i;
-          ctx.beginPath();
-          ctx.moveTo(lx, netY);
-          ctx.lineTo(lx, GROUND_Y());
-          ctx.stroke();
-        }
-        for (let i = 0; i <= 3; i++) {
-          const ly = netY + (NET_H / 3) * i;
-          ctx.beginPath();
-          ctx.moveTo(netX, ly);
-          ctx.lineTo(netX + netW, ly);
-          ctx.stroke();
-        }
-        ctx.strokeStyle = "#555";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(netX, netY, netW, NET_H);
-      }
+      const netImg = new Image();
+      netImg.src = "./net.png";
+
+     function drawPipe(pipe) {
+  const boatX = pipe.x + PIPE_WIDTH / 2 - BOAT_W / 2;
+  const boatY = pipe.topH - BOAT_H;
+  if (boatImg.complete && boatImg.naturalWidth > 0) {
+    ctx.drawImage(boatImg, boatX, boatY, BOAT_W, BOAT_H);
+  } else {
+    ctx.fillStyle = COLOR.pipe;
+    ctx.fillRect(pipe.x - 4, boatY, PIPE_WIDTH + 8, BOAT_H);
+  }
+  const wireX = pipe.x + PIPE_WIDTH / 2;
+  ctx.beginPath();
+  ctx.moveTo(wireX, pipe.topH);
+  ctx.lineTo(wireX, GROUND_Y() - NET_H);
+  ctx.strokeStyle = "#aaaaaa";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  const netX = pipe.x - 4;
+  const netY = GROUND_Y() - NET_H;
+  const netW = PIPE_WIDTH + 8;
+  if (netImg.complete && netImg.naturalWidth > 0) {
+    ctx.drawImage(netImg, netX, netY, netW, NET_H);
+  }
+}
 
       // ── Ribbon drawing ────────────────────────────────────────────────────────────
       // Emoji string pre-built for the vertical stack
@@ -313,6 +328,11 @@
       fishImg.src = SALMON;
       const boatImg = new Image();
       boatImg.src = "./boat.png";
+            const seaFloorImg = new Image();
+      seaFloorImg.src = "./sea-floor.png";
+      const skyImg = new Image();
+      skyImg.src = "./sky.png";
+
       const TRASH_SRCS = ["./trash.png", "./trash-2.png", "./trash-3.png"];
       const trashImgs = TRASH_SRCS.map((src) => {
         const i = new Image();
