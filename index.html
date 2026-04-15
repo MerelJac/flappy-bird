@@ -12,14 +12,12 @@
   <body>
     <!-- ── Start Screen ── -->
     <div id="start-screen" class="screen active">
-      <div class="image-stack">
-        <img src="title.png" />
-        <!-- behind -->
-        <img src="title-fish.png" />
-        <!-- in front -->
+      <div class="logo-div">
+        <img src="logo.png" class="logo-child" />
       </div>
       <p class="tap-hint">Try to avoid fishing nets and other obstacles!</p>
       <button class="btn btn-start" id="btn-start">Play</button>
+      <canvas id="bubble-canvas"></canvas>
     </div>
 
     <!-- ── Game Screen ── -->
@@ -223,11 +221,83 @@
 
       const GROUND_Y = () => Math.round(GAME_H * 0.88);
 
-    function drawBackground() {
+      const bubbleCanvas = document.getElementById("bubble-canvas");
+      const bCtx = bubbleCanvas.getContext("2d");
+
+      const bubbleImgs = [new Image(), new Image()];
+      bubbleImgs[0].src = "./bubble.png";
+      bubbleImgs[1].src = "./bubble-small.png";
+
+      const BUBBLE_COUNT = 4;
+      let bubbles = [];
+
+      function resizeBubbleCanvas() {
+        bubbleCanvas.width = window.innerWidth;
+        bubbleCanvas.height = window.innerHeight;
+      }
+      resizeBubbleCanvas();
+      window.addEventListener("resize", resizeBubbleCanvas);
+
+      function randomBubble() {
+        const big = Math.random() > 0.5;
+        const size = big ? 60 + Math.random() * 30 : 30 + Math.random() * 20;
+        const speed = 0.4 + Math.random() * 0.6;
+        const angle = Math.random() * Math.PI * 2;
+        return {
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size,
+          img: bubbleImgs[big ? 0 : 1],
+          opacity: 0.6 + Math.random() * 0.4,
+        };
+      }
+
+      for (let i = 0; i < BUBBLE_COUNT; i++) bubbles.push(randomBubble());
+
+      function animateBubbles() {
+        if (
+          !document.getElementById("start-screen").classList.contains("active")
+        ) {
+          requestAnimationFrame(animateBubbles);
+          return;
+        }
+
+        bCtx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
+
+        for (const b of bubbles) {
+          b.x += b.vx;
+          b.y += b.vy;
+
+          // bounce off edges
+          if (b.x - b.size / 2 < 0 || b.x + b.size / 2 > bubbleCanvas.width)
+            b.vx *= -1;
+          if (b.y - b.size / 2 < 0 || b.y + b.size / 2 > bubbleCanvas.height)
+            b.vy *= -1;
+
+          if (b.img.complete && b.img.naturalWidth > 0) {
+            bCtx.globalAlpha = b.opacity;
+            bCtx.drawImage(
+              b.img,
+              b.x - b.size / 2,
+              b.y - b.size / 2,
+              b.size,
+              b.size,
+            );
+            bCtx.globalAlpha = 1;
+          }
+        }
+
+        requestAnimationFrame(animateBubbles);
+      }
+
+      animateBubbles();
+
+      function drawBackground() {
         if (skyImg.complete && skyImg.naturalWidth > 0) {
           ctx.drawImage(skyImg, 0, 0, GAME_W, OCEAN_TOP());
         } else {
-
           ctx.fillRect(0, 0, GAME_W, OCEAN_TOP());
         }
         const oceanTop = OCEAN_TOP();
@@ -263,30 +333,30 @@
       const netImg = new Image();
       netImg.src = "./net.png";
 
-     function drawPipe(pipe) {
-  const boatX = pipe.x + PIPE_WIDTH / 2 - BOAT_W / 2;
-  const boatY = pipe.topH - BOAT_H;
-  if (boatImg.complete && boatImg.naturalWidth > 0) {
-    ctx.drawImage(boatImg, boatX, boatY, BOAT_W, BOAT_H);
-  } else {
-    ctx.fillStyle = COLOR.pipe;
-    ctx.fillRect(pipe.x - 4, boatY, PIPE_WIDTH + 8, BOAT_H);
-  }
-  const wireX = pipe.x + PIPE_WIDTH / 2;
-  ctx.beginPath();
-  ctx.moveTo(wireX, pipe.topH);
-  ctx.lineTo(wireX, GROUND_Y() - NET_H);
-  ctx.strokeStyle = "#aaaaaa";
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
+      function drawPipe(pipe) {
+        const boatX = pipe.x + PIPE_WIDTH / 2 - BOAT_W / 2;
+        const boatY = pipe.topH - BOAT_H;
+        if (boatImg.complete && boatImg.naturalWidth > 0) {
+          ctx.drawImage(boatImg, boatX, boatY, BOAT_W, BOAT_H);
+        } else {
+          ctx.fillStyle = COLOR.pipe;
+          ctx.fillRect(pipe.x - 4, boatY, PIPE_WIDTH + 8, BOAT_H);
+        }
+        const wireX = pipe.x + PIPE_WIDTH / 2;
+        ctx.beginPath();
+        ctx.moveTo(wireX, pipe.topH);
+        ctx.lineTo(wireX, GROUND_Y() - NET_H);
+        ctx.strokeStyle = "#aaaaaa";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
 
-  const netX = pipe.x - 4;
-  const netY = GROUND_Y() - NET_H;
-  const netW = PIPE_WIDTH + 8;
-  if (netImg.complete && netImg.naturalWidth > 0) {
-    ctx.drawImage(netImg, netX, netY, netW, NET_H);
-  }
-}
+        const netX = pipe.x - 4;
+        const netY = GROUND_Y() - NET_H;
+        const netW = PIPE_WIDTH + 8;
+        if (netImg.complete && netImg.naturalWidth > 0) {
+          ctx.drawImage(netImg, netX, netY, netW, NET_H);
+        }
+      }
 
       // ── Ribbon drawing ────────────────────────────────────────────────────────────
       // Emoji string pre-built for the vertical stack
@@ -328,7 +398,7 @@
       fishImg.src = SALMON;
       const boatImg = new Image();
       boatImg.src = "./boat.png";
-            const seaFloorImg = new Image();
+      const seaFloorImg = new Image();
       seaFloorImg.src = "./sea-floor.png";
       const skyImg = new Image();
       skyImg.src = "./sky.png";
@@ -578,10 +648,10 @@
 
       document.getElementById("btn-start").addEventListener("click", startGame);
       document
-        .getElementsByClassName("btn-restart")
+        .getElementById("btn-restart")
         .addEventListener("click", startGame);
       document
-        .getElementById("btn-win-restart")
+        .getElementById("btn-restart-win")
         .addEventListener("click", startGame);
 
       document.addEventListener("keydown", (e) => {
