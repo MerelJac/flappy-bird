@@ -89,6 +89,10 @@
         "Salmon can leap up to 3.5 metres to climb waterfalls.",
       ];
 
+      const TRASH_FACTS = ["This is a trash fact - you got caught by trash."];
+
+      const NET_FACTS = ["This is a net fact - you got caught by net."];
+
       const screens = {
         start: document.getElementById("start-screen"),
         game: document.getElementById("game-screen"),
@@ -406,6 +410,8 @@
         }
       }
 
+      let deathReason = null;
+
       const fishImg = new Image();
       fishImg.src = SALMON;
       const boatImg = new Image();
@@ -461,25 +467,45 @@
           by = fish.y + MARGIN;
         const bw = fish.w - MARGIN * 2,
           bh = fish.h - MARGIN * 2;
-        if (fish.y + fish.h >= GROUND_Y() || fish.y <= OCEAN_TOP()) return true;
+
+        // Top = trash
+        if (fish.y <= OCEAN_TOP()) {
+          return "trash";
+        }
+
+        // Bottom = net
+        if (fish.y + fish.h >= GROUND_Y()) {
+          return "net";
+        }
+
         for (const p of nets) {
           const inX = bx < p.x + PIPE_WIDTH && bx + bw > p.x;
-          if (inX && by < p.topH) return true;
+
+          // Top pipe
+          if (inX && by < p.topH) return "net";
+
+          // Bottom net
           const netX = p.x - 4,
             netW = PIPE_WIDTH + 8,
             netY = GROUND_Y() - NET_H;
-          if (bx < netX + netW && bx + bw > netX && by + bh > netY) return true;
+
+          if (bx < netX + netW && bx + bw > netX && by + bh > netY) {
+            return "net";
+          }
         }
+
         for (const t of trashItems) {
           if (
             bx < t.x + TRASH_W &&
             bx + bw > t.x &&
             by < t.y + TRASH_H &&
             by + bh > t.y
-          )
-            return true;
+          ) {
+            return "trash";
+          }
         }
-        return false;
+
+        return null;
       }
 
       function checkRibbonCross() {
@@ -576,7 +602,11 @@
         fish.vy += GRAVITY;
         fish.y += fish.vy;
 
-        if (checkCollision()) state = "dead";
+        const collisionType = checkCollision();
+        if (collisionType) {
+          deathReason = collisionType;
+          state = "dead";
+        }
       }
 
       function render() {
@@ -642,8 +672,21 @@
         if (score > bestScore) bestScore = score;
         document.getElementById("final-score").textContent = score;
         document.getElementById("best-score").textContent = bestScore;
-        document.querySelector(".info-placeholder").textContent =
-          END_FACTS[Math.floor(Math.random() * END_FACTS.length)];
+
+        let fact;
+        if (deathReason === "trash") {
+          fact = TRASH_FACTS[Math.floor(Math.random() * TRASH_FACTS.length)];
+          document.querySelector(".end-title").textContent = "You hit trash!";
+        } else if (deathReason === "net") {
+          fact = NET_FACTS[Math.floor(Math.random() * NET_FACTS.length)];
+          document.querySelector(".end-title").textContent =
+            "Caught in the net!";
+        } else {
+          fact = END_FACTS[Math.floor(Math.random() * END_FACTS.length)];
+        }
+
+        document.querySelector(".info-placeholder").textContent = fact;
+
         setTimeout(() => showScreen("end"), 600);
       }
 
