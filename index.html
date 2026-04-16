@@ -140,8 +140,8 @@
 
       const COLOR = {
         ground: "#c8a96e",
-        pipe: "#5ec25e",
-        pipeBorder: "#3a8a3a",
+        net: "#5ec25e",
+        netBorder: "#3a8a3a",
       };
 
       const FACTS = [
@@ -187,7 +187,7 @@
 
       let state,
         bird,
-        pipes,
+        nets,
         trashItems,
         ribbon,
         score,
@@ -199,7 +199,7 @@
       function resetGame() {
         state = "countdown";
         bird = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 70, h: 52, angle: 0 };
-        pipes = [];
+        nets = [];
         trashItems = [];
         ribbon = null; // spawned later
         score = 0;
@@ -333,24 +333,24 @@
       const netImg = new Image();
       netImg.src = "./net.png";
 
-      function drawPipe(pipe) {
-        const boatX = pipe.x + PIPE_WIDTH / 2 - BOAT_W / 2;
-        const boatY = pipe.topH - BOAT_H;
+      function drawNet(net) {
+        const boatX = net.x + PIPE_WIDTH / 2 - BOAT_W / 2;
+        const boatY = net.topH - BOAT_H;
         if (boatImg.complete && boatImg.naturalWidth > 0) {
           ctx.drawImage(boatImg, boatX, boatY, BOAT_W, BOAT_H);
         } else {
-          ctx.fillStyle = COLOR.pipe;
-          ctx.fillRect(pipe.x - 4, boatY, PIPE_WIDTH + 8, BOAT_H);
+          ctx.fillStyle = COLOR.net;
+          ctx.fillRect(net.x - 4, boatY, PIPE_WIDTH + 8, BOAT_H);
         }
-        const wireX = pipe.x + PIPE_WIDTH / 2;
+        const wireX = net.x + PIPE_WIDTH / 2;
         ctx.beginPath();
-        ctx.moveTo(wireX, pipe.topH);
+        ctx.moveTo(wireX, net.topH);
         ctx.lineTo(wireX, GROUND_Y() - NET_H);
         ctx.strokeStyle = "#aaaaaa";
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        const netX = pipe.x - 4;
+        const netX = net.x - 4;
         const netY = GROUND_Y() - NET_H;
         const netW = PIPE_WIDTH + 8;
         if (netImg.complete && netImg.naturalWidth > 0) {
@@ -462,7 +462,7 @@
         const bw = bird.w - MARGIN * 2,
           bh = bird.h - MARGIN * 2;
         if (bird.y + bird.h >= GROUND_Y() || bird.y <= OCEAN_TOP()) return true;
-        for (const p of pipes) {
+        for (const p of nets) {
           const inX = bx < p.x + PIPE_WIDTH && bx + bw > p.x;
           if (inX && by < p.topH) return true;
           const netX = p.x - 4,
@@ -533,8 +533,8 @@
         // Spawn the ribbon when RIBBON_LEAD seconds remain, if not already spawned
         if (!ribbon && elapsed >= GAME_RUNTIME - RIBBON_LEAD) {
           ribbon = { x: PIPE_SPAWN_X() };
-          // Clear any pipes or trash that spawned ahead of the ribbon
-          pipes = pipes.filter((p) => p.x < ribbon.x);
+          // Clear any nets or trash that spawned ahead of the ribbon
+          nets = nets.filter((p) => p.x < ribbon.x);
           trashItems = trashItems.filter((t) => t.x < ribbon.x);
         }
 
@@ -550,16 +550,16 @@
         frame++;
 
         if (!ribbon && frame % BOAT_INTERVAL === 0) {
-          pipes.push({ x: PIPE_SPAWN_X(), topH: OCEAN_TOP(), scored: false });
+          nets.push({ x: PIPE_SPAWN_X(), topH: OCEAN_TOP(), scored: false });
         }
-        for (const p of pipes) {
+        for (const p of nets) {
           p.x -= PIPE_SPEED;
           if (!p.scored && p.x + PIPE_WIDTH < bird.x) {
             p.scored = true;
             score++;
           }
         }
-        pipes = pipes.filter((p) => p.x + PIPE_WIDTH + 8 > 0);
+        nets = nets.filter((p) => p.x + PIPE_WIDTH + 8 > 0);
 
         if (!ribbon && frame % TRASH_INTERVAL === 0) {
           const minY = OCEAN_TOP() + 10;
@@ -582,7 +582,7 @@
       function render() {
         ctx.clearRect(0, 0, GAME_W, GAME_H);
         drawBackground();
-        pipes.forEach(drawPipe);
+        nets.forEach(drawNet);
         drawTrashItems();
         drawRibbon(ribbon);
         drawFish();
