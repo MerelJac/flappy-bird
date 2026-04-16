@@ -186,7 +186,7 @@
       }
 
       let state,
-        bird,
+        fish,
         nets,
         trashItems,
         ribbon,
@@ -198,7 +198,7 @@
 
       function resetGame() {
         state = "countdown";
-        bird = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 70, h: 52, angle: 0 };
+        fish = { x: 80, y: GAME_H / 2 - 20, vy: 0, w: 70, h: 52, angle: 0 };
         nets = [];
         trashItems = [];
         ribbon = null; // spawned later
@@ -212,7 +212,7 @@
       }
 
       function flap() {
-        if (state === "running") bird.vy = FLAP_VEL;
+        if (state === "running") fish.vy = FLAP_VEL;
       }
       canvas.addEventListener("pointerdown", (e) => {
         e.preventDefault();
@@ -424,16 +424,16 @@
 
       function drawFish() {
         ctx.save();
-        ctx.translate(bird.x + bird.w / 2, bird.y + bird.h / 2);
-        const targetAngle = bird.vy < 0 ? -0.4 : Math.min(bird.vy * 0.07, 1.2);
-        bird.angle += (targetAngle - bird.angle) * 0.15;
-        ctx.rotate(bird.angle);
+        ctx.translate(fish.x + fish.w / 2, fish.y + fish.h / 2);
+        const targetAngle = fish.vy < 0 ? -0.4 : Math.min(fish.vy * 0.07, 1.2);
+        fish.angle += (targetAngle - fish.angle) * 0.15;
+        ctx.rotate(fish.angle);
         if (fishImg.complete && fishImg.naturalWidth > 0) {
-          ctx.drawImage(fishImg, -bird.w / 2, -bird.h / 2, bird.w, bird.h);
+          ctx.drawImage(fishImg, -fish.w / 2, -fish.h / 2, fish.w, fish.h);
         } else {
           ctx.fillStyle = "#f7b731";
           ctx.beginPath();
-          ctx.ellipse(0, 0, bird.w / 2, bird.h / 2, 0, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, fish.w / 2, fish.h / 2, 0, 0, Math.PI * 2);
           ctx.fill();
         }
         ctx.restore();
@@ -455,13 +455,13 @@
         document.getElementById("score-display").textContent = score;
       }
 
-      const MARGIN = 4;
+      const MARGIN = 3;
       function checkCollision() {
-        const bx = bird.x + MARGIN,
-          by = bird.y + MARGIN;
-        const bw = bird.w - MARGIN * 2,
-          bh = bird.h - MARGIN * 2;
-        if (bird.y + bird.h >= GROUND_Y() || bird.y <= OCEAN_TOP()) return true;
+        const bx = fish.x + MARGIN,
+          by = fish.y + MARGIN;
+        const bw = fish.w - MARGIN * 2,
+          bh = fish.h - MARGIN * 2;
+        if (fish.y + fish.h >= GROUND_Y() || fish.y <= OCEAN_TOP()) return true;
         for (const p of nets) {
           const inX = bx < p.x + PIPE_WIDTH && bx + bw > p.x;
           if (inX && by < p.topH) return true;
@@ -485,7 +485,7 @@
       function checkRibbonCross() {
         if (!ribbon) return false;
         // Fish leading edge just passed the ribbon centre
-        return bird.x + bird.w >= ribbon.x && bird.x <= ribbon.x + RIBBON_W;
+        return fish.x + fish.w >= ribbon.x && fish.x <= ribbon.x + RIBBON_W;
       }
 
       const countdownEl = document.getElementById("countdown-display");
@@ -554,7 +554,7 @@
         }
         for (const p of nets) {
           p.x -= PIPE_SPEED;
-          if (!p.scored && p.x + PIPE_WIDTH < bird.x) {
+          if (!p.scored && p.x + PIPE_WIDTH < fish.x) {
             p.scored = true;
             score++;
           }
@@ -573,8 +573,8 @@
         for (const t of trashItems) t.x -= PIPE_SPEED;
         trashItems = trashItems.filter((t) => t.x + TRASH_W > 0);
 
-        bird.vy += GRAVITY;
-        bird.y += bird.vy;
+        fish.vy += GRAVITY;
+        fish.y += fish.vy;
 
         if (checkCollision()) state = "dead";
       }
