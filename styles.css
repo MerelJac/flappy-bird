@@ -266,9 +266,9 @@ canvas {
   transform: translate(-50%, -50%);
   font-size: 96px;
   font-weight: 900;
-  color: #FF8D74;
+  color: white;
   text-align: center;
-  text-shadow: 2px 2px 0px #F22F33;
+  text-shadow: 2px 2px 0px #000000;
   z-index: 20;
   pointer-events: none;
   opacity: 0;
