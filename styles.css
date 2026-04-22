@@ -157,20 +157,18 @@ canvas {
 
 #score-display {
   position: absolute;
-
   top: 20px;
   right: 16px;
   padding: 10px;
-font-family: "Jersey 10";
-font-weight: 400;
-font-size: 100px;
-line-height: 20px;
-letter-spacing: 3%;
-text-align: center;
-vertical-align: middle;
-text-shadow: 0px 14px 0px 0px #000000;
-color: #FFFFFF;
-
+  font-family: "Jersey 10";
+  font-weight: 400;
+  font-size: 100px;
+  line-height: 20px;
+  letter-spacing: 3%;
+  text-align: center;
+  vertical-align: middle;
+  text-shadow: 2px 4px 0px #000000;
+  color: #FFFFFF;
 }
 
 #info-display {
@@ -249,9 +247,9 @@ color: #FFFFFF;
 .end-title {
   font-size: 3rem;
   font-family: "Jersey 10", sans-serif;
-  color: #a05752;
+  color: #FF8D74;
   text-align: center;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 2px 2px 0px #F22F33;
 }
 
 .score-label {
@@ -268,8 +266,9 @@ color: #FFFFFF;
   transform: translate(-50%, -50%);
   font-size: 96px;
   font-weight: 900;
-  color: #fff;
-  text-shadow: 3px 3px 0 #000;
+  color: #FF8D74;
+  text-align: center;
+  text-shadow: 2px 2px 0px #F22F33;
   z-index: 20;
   pointer-events: none;
   opacity: 0;
