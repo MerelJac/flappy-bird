@@ -337,6 +337,21 @@
       function drawNet(net) {
         const boatX = net.x + PIPE_WIDTH / 2 - BOAT_W / 2;
         const boatY = net.topH - BOAT_H;
+
+        const WIRE_IMG_OFFSET = 55;
+        const wireX = net.x + PIPE_WIDTH / 2 + WIRE_IMG_OFFSET;
+        const wireVisible = !ribbon || wireX < ribbon.x;
+
+        const BOAT_IMG_OFFSET = 130;
+        let netDrawX = null;
+        if (netImg.complete && netImg.naturalWidth > 0) {
+          const drawW = NET_H * (netImg.naturalWidth / netImg.naturalHeight);
+          const dx = boatX + BOAT_W / 2 - drawW / 2 + BOAT_IMG_OFFSET;
+          if (!ribbon || dx < ribbon.x) netDrawX = { dx, drawW };
+        }
+
+        if (!wireVisible && !netDrawX) return;
+
         const boatImg = boatImgs[net.imgIdx ?? 0];
         if (boatImg.complete && boatImg.naturalWidth > 0) {
           ctx.drawImage(boatImg, boatX, boatY, BOAT_W, BOAT_H);
@@ -344,23 +359,18 @@
           ctx.fillStyle = COLOR.net;
           ctx.fillRect(net.x - 4, boatY, PIPE_WIDTH + 8, BOAT_H);
         }
-        // How to move the wire
-        const WIRE_IMG_OFFSET = 55; // visual centering correction
-        const wireX = net.x + PIPE_WIDTH / 2 + WIRE_IMG_OFFSET;
-        ctx.beginPath();
-        ctx.moveTo(wireX, net.topH);
-        ctx.lineTo(wireX, GROUND_Y() - NET_H);
-        ctx.strokeStyle = "#aaaaaa";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
 
-        if (netImg.complete && netImg.naturalWidth > 0) {
-          const aspectRatio = netImg.naturalWidth / netImg.naturalHeight;
-          const drawW = NET_H * aspectRatio;
-          const BOAT_IMG_OFFSET = 130; // visual centering correction
-          const drawX = boatX + BOAT_W / 2 - drawW / 2 + BOAT_IMG_OFFSET;
-          const netY = GROUND_Y() - NET_H;
-          ctx.drawImage(netImg, drawX, netY, drawW, NET_H);
+        if (wireVisible) {
+          ctx.beginPath();
+          ctx.moveTo(wireX, net.topH);
+          ctx.lineTo(wireX, GROUND_Y() - NET_H);
+          ctx.strokeStyle = "#aaaaaa";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        if (netDrawX) {
+          ctx.drawImage(netImg, netDrawX.dx, GROUND_Y() - NET_H, netDrawX.drawW, NET_H);
         }
       }
 
@@ -471,9 +481,9 @@
           return "trash";
         }
 
-        // Bottom = net
+        // Bottom = trash (sea floor, no net involved)
         if (fish.y + fish.h >= GROUND_Y()) {
-          return "net";
+          return "trash";
         }
 
         for (const p of nets) {
@@ -482,12 +492,15 @@
           // Top pipe
           if (inX && by < p.topH) return "net";
 
-          // Bottom net
-          const netX = p.x - 4,
-            netW = PIPE_WIDTH + 8,
-            netY = GROUND_Y() - NET_H;
+          // Bottom net — offset matches the visual BOAT_IMG_OFFSET used in drawNet
+          const boatCenterX = p.x + PIPE_WIDTH / 2;
+          const netImgW = netImg.naturalWidth > 0
+            ? NET_H * (netImg.naturalWidth / netImg.naturalHeight)
+            : PIPE_WIDTH + 8;
+          const netX = boatCenterX - netImgW / 2 + 130;
+          const netY = GROUND_Y() - NET_H;
 
-          if (bx < netX + netW && bx + bw > netX && by + bh > netY) {
+          if (bx < netX + netImgW && bx + bw > netX && by + bh > netY) {
             return "net";
           }
         }
@@ -588,7 +601,8 @@
             score++;
           }
         }
-        nets = nets.filter((p) => p.x + PIPE_WIDTH + 8 > 0);
+        // Keep nets on left
+        nets = nets.filter((p) => p.x + PIPE_WIDTH + 8 + 190 > 0);
 
         if (!ribbon && frame % TRASH_INTERVAL === 0) {
           const minY = OCEAN_TOP() + 10;
@@ -679,7 +693,7 @@
         let fact;
         if (deathReason === "trash") {
           fact = TRASH_FACTS[Math.floor(Math.random() * TRASH_FACTS.length)];
-          document.querySelector(".end-title").textContent = "You hit trash!";
+          document.querySelector(".end-title").textContent = "Game over!";
         } else if (deathReason === "net") {
           fact = NET_FACTS[Math.floor(Math.random() * NET_FACTS.length)];
           document.querySelector(".end-title").textContent =
