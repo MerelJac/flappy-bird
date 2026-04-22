@@ -57,7 +57,7 @@
       <button class="btn btn-restart" id="btn-restart">Play Again</button>
       <button class="btn btn-copy" id="btn-copy">Share Link</button>
       <button class="btn btn-learn" id="btn-learn">Learn More</button>
-        <canvas id="bubble-canvas"></canvas>
+      <canvas id="bubble-canvas"></canvas>
     </div>
 
     <!-- ── Win Screen ── -->
@@ -75,7 +75,7 @@
       <button class="btn btn-restart" id="btn-restart-win">Play Again</button>
       <button class="btn btn-copy" id="btn-copy-win">Share Link</button>
       <button class="btn btn-learn" id="btn-learn-win">Learn More</button>
-        <canvas id="bubble-canvas"></canvas>
+      <canvas id="bubble-canvas"></canvas>
     </div>
 
     <script>
@@ -345,7 +345,8 @@
           ctx.fillRect(net.x - 4, boatY, PIPE_WIDTH + 8, BOAT_H);
         }
         // How to move the wire
-        const wireX = net.x + PIPE_WIDTH / 2 + 55;
+        const WIRE_IMG_OFFSET = 55; // visual centering correction
+        const wireX = net.x + PIPE_WIDTH / 2 + WIRE_IMG_OFFSET;
         ctx.beginPath();
         ctx.moveTo(wireX, net.topH);
         ctx.lineTo(wireX, GROUND_Y() - NET_H);
@@ -353,23 +354,13 @@
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        const netX = net.x - 4;
-        const netY = GROUND_Y() - NET_H;
-        const netW = PIPE_WIDTH + 8;
         if (netImg.complete && netImg.naturalWidth > 0) {
           const aspectRatio = netImg.naturalWidth / netImg.naturalHeight;
           const drawW = NET_H * aspectRatio;
-          const drawX = wireX - drawW;
-          // Reveal the net right-edge-first as it enters from the right
-          const visibleW = Math.min(drawW, GAME_W - drawX);
-          if (visibleW > 0) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(wireX - visibleW, netY, visibleW, NET_H);
-            ctx.clip();
-            ctx.drawImage(netImg, drawX, netY, drawW, NET_H);
-            ctx.restore();
-          }
+          const BOAT_IMG_OFFSET = 130; // visual centering correction
+          const drawX = boatX + BOAT_W / 2 - drawW / 2 + BOAT_IMG_OFFSET;
+          const netY = GROUND_Y() - NET_H;
+          ctx.drawImage(netImg, drawX, netY, drawW, NET_H);
         }
       }
 
@@ -413,7 +404,7 @@
 
       const fishImg = new Image();
       fishImg.src = SALMON;
-const seaFloorImg = new Image();
+      const seaFloorImg = new Image();
       seaFloorImg.src = "./sea-floor.png";
       const skyImg = new Image();
       skyImg.src = "./sky.png";
@@ -463,7 +454,6 @@ const seaFloorImg = new Image();
           }
         }
       }
-
 
       function drawScore() {
         document.getElementById("score-display").textContent = score;
@@ -584,7 +574,12 @@ const seaFloorImg = new Image();
         frame++;
 
         if (!ribbon && frame % BOAT_INTERVAL === 0) {
-          nets.push({ x: PIPE_SPAWN_X(), topH: OCEAN_TOP(), scored: false, imgIdx: Math.floor(Math.random() * boatImgs.length) });
+          nets.push({
+            x: PIPE_SPAWN_X(),
+            topH: OCEAN_TOP(),
+            scored: false,
+            imgIdx: Math.floor(Math.random() * boatImgs.length),
+          });
         }
         for (const p of nets) {
           p.x -= PIPE_SPEED;
