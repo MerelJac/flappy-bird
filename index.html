@@ -22,7 +22,10 @@
 
     <!-- ── Game Screen ── -->
     <div id="game-screen" class="screen">
-      <div id="info-display"></div>
+      <div id="info-display">
+        <div class="fun-fact-label">FUN FACT!</div>
+        <div id="fun-fact"></div>
+      </div>
       <div id="score-display">0</div>
       <div id="countdown-display"></div>
       <div id="finish-ribbon">
@@ -163,7 +166,7 @@
         "Salmon can leap up to 3.5 metres to climb waterfalls.",
       ];
 
-      const infoEl = document.getElementById("info-display");
+      const infoEl = document.getElementById("fun-fact");
 
       let infoTimeout,
         infoQueue = [],
@@ -306,20 +309,12 @@
         }
         const oceanTop = OCEAN_TOP();
         const oceanH = GROUND_Y() - oceanTop;
-        const oceanGrad = ctx.createLinearGradient(
-          0,
-          oceanTop,
-          0,
-          oceanTop + oceanH,
-        );
-        oceanGrad.addColorStop(0, "#80c7e5");
-        oceanGrad.addColorStop(0.4952, "#82c9e7");
-        oceanGrad.addColorStop(1, "#5f98c2");
-        ctx.fillStyle = oceanGrad;
-        ctx.fillRect(0, oceanTop, GAME_W, oceanH);
-        // white overlay at 14% opacity
-        ctx.fillStyle = "rgba(255,255,255,0.14)";
-        ctx.fillRect(0, oceanTop, GAME_W, oceanH);
+        if (oceanImg.complete && oceanImg.naturalWidth > 0) {
+          ctx.drawImage(oceanImg, 0, oceanTop, GAME_W, oceanH);
+        } else {
+          ctx.fillStyle = "#82c9e7";
+          ctx.fillRect(0, oceanTop, GAME_W, oceanH);
+        }
         if (seaFloorImg.complete && seaFloorImg.naturalWidth > 0) {
           ctx.drawImage(
             seaFloorImg,
@@ -333,10 +328,6 @@
           ctx.fillRect(0, GROUND_Y(), GAME_W, GAME_H - GROUND_Y());
         }
       }
-
-      if (skyImg.complete && skyImg.naturalWidth > 0) {
-          ctx.drawImage(skyImg, 0, 0, GAME_W, OCEAN_TOP());
-        }
 
       const netImg = new Image();
       netImg.src = "./net.png";
@@ -425,11 +416,14 @@
       const skyImg = new Image();
       skyImg.src = "./sky.png";
 
-            const oceanImg = new Image();
+      const oceanImg = new Image();
       oceanImg.src = "./ocean.png";
 
-
-      const TRASH_SRCS = ["./orca-obstacle.png", "./salmon-shark.png", "./trash-3.png"];
+      const TRASH_SRCS = [
+        "./orca-obstacle.png",
+        "./salmon-shark.png",
+        "./trash-3.png",
+      ];
       const trashImgs = TRASH_SRCS.map((src) => {
         const i = new Image();
         i.src = src;
