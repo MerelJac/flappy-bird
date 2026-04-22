@@ -35,9 +35,9 @@ body {
 
 /* ── Start Screen ── */
 #start-screen {
-  background:
-    linear-gradient(180deg, #80c7e5 0%, #82c9e7 49.52%, #5f98c2 100%),
-    linear-gradient(0deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.14));
+background: linear-gradient(180deg, #1A86A8 0%, #37ACCF 49.52%, #056C90 100%),
+linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
+
   gap: 24px;
 }
 
@@ -117,7 +117,7 @@ body {
 
 .btn {
   padding: 14px 48px;
-  font-size: 1.2rem;
+  font-size: 2rem;
   font-weight: 400;
   cursor: pointer;
   letter-spacing: 0.1em;
@@ -136,7 +136,7 @@ body {
 }
 
 .btn-start {
-  background: #e55a0f;
+  background: #F22F33;
   color: white;
   line-height: 20px;
   text-align: center;
@@ -144,9 +144,7 @@ body {
 }
 /* ── Game Screen ── */
 #game-screen {
-  background:
-    linear-gradient(180deg, #80c7e5 0%, #82c9e7 49.52%, #5f98c2 100%),
-    linear-gradient(0deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.14));
+background: linear-gradient(180deg, #1A86A8 0%, #37ACCF 49.52%, #056C90 100%),
 }
 
 canvas {
@@ -213,9 +211,8 @@ canvas {
 /* ──  Screen ── */
 #end-screen,
 #win-screen {
-  background:
-    linear-gradient(180deg, #80c7e5 0%, #82c9e7 49.52%, #5f98c2 100%),
-    linear-gradient(0deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.14));
+background: linear-gradient(180deg, #1A86A8 0%, #37ACCF 49.52%, #056C90 100%),
+linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
   gap: 20px;
 }
 
