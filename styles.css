@@ -157,28 +157,20 @@ canvas {
 
 #score-display {
   position: absolute;
+
   top: 20px;
   right: 16px;
   padding: 10px;
-  border-radius: 26px;
-  max-width: 40vw;
-  font-size: 1rem;
-  line-height: 1.35;
-  color: black;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-  pointer-events: none;
-  z-index: 10;
-  opacity: 1;
-  background-color: white;
-  transition: opacity 0.4s ease;
-  border: 1px solid #000000;
-  font-family: "DM Mono", monospace;
-  font-weight: 500;
-  font-style: Medium;
-  line-height: 100%;
-  letter-spacing: 2%;
+font-family: "Jersey 10";
+font-weight: 400;
+font-size: 100px;
+line-height: 20px;
+letter-spacing: 3%;
+text-align: center;
+vertical-align: middle;
+text-shadow: 0px 14px 0px 0px #000000;
+color: #FFFFFF;
 
-  vertical-align: middle;
 }
 
 #info-display {
@@ -223,7 +215,7 @@ canvas {
 #fun-fact {
   font-family: "Sometype Mono";
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 500;
   font-style: Bold;
   line-height: 20px;
   letter-spacing: -3%;
@@ -309,8 +301,8 @@ canvas {
     90deg,
     #fff 0px,
     #fff 28px,
-    #e63946 28px,
-    #e63946 56px
+    #FF8D74 28px,
+    #F22F33 56px
   );
   display: flex;
   align-items: center;
