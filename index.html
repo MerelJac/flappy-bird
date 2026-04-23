@@ -15,7 +15,7 @@
       <div class="logo-div">
         <img src="logo.png" class="logo-child" />
       </div>
-      <p class="tap-hint">Swim upstream – find the spawning grounds!</p>
+      <p class="tap-hint">Dodge nets, outswim the bottom trawlers! </p>
       <button class="btn btn-start" id="btn-start">Play</button>
       <canvas id="bubble-canvas"></canvas>
     </div>
@@ -111,23 +111,13 @@
 
     <script>
       const END_FACTS = [
-        "8 million tonnes of plastic enter the ocean every year.",
-        "Salmon can detect their home river by smell alone.",
-        "Ghost nets account for 46% of the Great Pacific Garbage Patch.",
-        "Pacific salmon die after spawning — feeding the whole forest.",
-        "A single plastic bag can kill sea turtles who mistake it for jellyfish.",
-        "Salmon navigate using Earth's magnetic field.",
-        "Ocean plastic harms over 700 marine species.",
-        "Farmed salmon are fed wild-caught fish, straining ocean stocks.",
-        "Microplastics have been found in salmon tissue worldwide.",
-        "Healthy salmon runs bring vital nutrients from sea to land.",
-        "It takes 450 years for a plastic bottle to decompose at sea.",
-        "Salmon can leap up to 3.5 metres to climb waterfalls.",
+        "Mary Peltola is fighting to save salmon like you from bottom trawlers",
+
       ];
 
-      const TRASH_FACTS = ["This is a trash fact - you got caught by trash."];
+      const TRASH_FACTS = ["You fed an [ANIMAL NAME], but at least you’re not bycatch. Play again!"];
 
-      const NET_FACTS = ["This is a net fact - you got caught by net."];
+      const NET_FACTS = ["Mary Peltola is fighting to ban bottom trawling to save salmon like you"];
 
       const screens = {
         start: document.getElementById("start-screen"),
@@ -185,20 +175,15 @@
         netBorder: "#3a8a3a",
       };
 
-      const FACTS = [
-        "8 million tonnes of plastic enter the ocean every year.",
-        "Salmon can detect their home river by smell alone.",
-        "Ghost nets account for 46% of the Great Pacific Garbage Patch.",
-        "Pacific salmon die after spawning — feeding the whole forest.",
-        "A single plastic bag can kill sea turtles who mistake it for jellyfish.",
-        "Salmon navigate using Earth's magnetic field.",
-        "Ocean plastic harms over 700 marine species.",
-        "Farmed salmon are fed wild-caught fish, straining ocean stocks.",
-        "Microplastics have been found in salmon tissue worldwide.",
-        "Healthy salmon runs bring vital nutrients from sea to land.",
-        "It takes 450 years for a plastic bottle to decompose at sea.",
-        "Salmon can leap up to 3.5 metres to climb waterfalls.",
-      ];
+const FACTS = [
+  "Every year, millions of fish & crab are killed as bycatch",
+  "More halibut is killed as bycatch than consumed",
+  "Bottom trawlers destroy 580 miles of seabed every day",
+  "Trawlers have killed 1 million lbs of halibut this year",
+  "Trawlers kill 141 million lbs of marine life each year",
+  "Last year, almost $200 million salmon were caught in AK",
+  "Salmon sharks can reach up to 600lbs"
+];
 
       const infoEl = document.getElementById("fun-fact");
 
