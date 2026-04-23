@@ -15,7 +15,7 @@
       <div class="logo-div">
         <img src="logo.png" class="logo-child" />
       </div>
-      <p class="tap-hint">Dodge nets, outswim the bottom trawlers! </p>
+      <p class="tap-hint">Dodge nets, outswim the bottom trawlers!</p>
       <button class="btn btn-start" id="btn-start">Play</button>
       <canvas id="bubble-canvas"></canvas>
     </div>
@@ -79,7 +79,7 @@
     <!-- ── Win Screen ── -->
     <div id="win-screen" class="screen">
       <div class="end-panel">
-        <div class="end-title">You made it!</div>
+        <div class="end-title">YOU MADE IT HOME!</div>
         <div class="info-placeholder" id="win-fact"></div>
         <div class="divider"></div>
         <div class="score-label">Score</div>
@@ -112,12 +112,15 @@
     <script>
       const END_FACTS = [
         "Mary Peltola is fighting to save salmon like you from bottom trawlers",
-
       ];
 
-      const TRASH_FACTS = ["You fed an [ANIMAL NAME], but at least you’re not bycatch. Play again!"];
+      const TRASH_FACTS = [
+        "You fed an [ANIMAL NAME], but at least you’re not bycatch. Play again!",
+      ];
 
-      const NET_FACTS = ["Mary Peltola is fighting to ban bottom trawling to save salmon like you"];
+      const NET_FACTS = [
+        "Mary Peltola is fighting to ban bottom trawling to save salmon like you",
+      ];
 
       const screens = {
         start: document.getElementById("start-screen"),
@@ -135,6 +138,10 @@
       const ctx = canvas.getContext("2d");
       let GAME_W = window.innerWidth;
       let GAME_H = window.innerHeight;
+
+      let deathImgIdx = null;
+
+      const TRASH_NAMES = ["an orca", "a salmon shark"];
 
       function resizeCanvas() {
         GAME_W = window.innerWidth;
@@ -175,15 +182,15 @@
         netBorder: "#3a8a3a",
       };
 
-const FACTS = [
-  "Every year, millions of fish & crab are killed as bycatch",
-  "More halibut is killed as bycatch than consumed",
-  "Bottom trawlers destroy 580 miles of seabed every day",
-  "Trawlers have killed 1 million lbs of halibut this year",
-  "Trawlers kill 141 million lbs of marine life each year",
-  "Last year, almost $200 million salmon were caught in AK",
-  "Salmon sharks can reach up to 600lbs"
-];
+      const FACTS = [
+        "Every year, millions of fish & crab are killed as bycatch",
+        "More halibut is killed as bycatch than consumed",
+        "Bottom trawlers destroy 580 miles of seabed every day",
+        "Trawlers have killed 1 million lbs of halibut this year",
+        "Trawlers kill 141 million lbs of marine life each year",
+        "Last year, almost $200 million salmon were caught in AK",
+        "Salmon sharks can reach up to 600lbs",
+      ];
 
       const infoEl = document.getElementById("fun-fact");
 
@@ -495,7 +502,7 @@ const FACTS = [
         document.getElementById("score-display").textContent = score;
       }
 
-      const MARGIN = 3;
+      const MARGIN = 30;
       function checkCollision() {
         const bx = fish.x + MARGIN,
           by = fish.y + MARGIN;
@@ -504,19 +511,19 @@ const FACTS = [
 
         // Top = trash
         if (fish.y <= OCEAN_TOP()) {
-          return "trash";
+          return { type: "trash", imgIdx: null };
         }
 
         // Bottom = trash (sea floor, no net involved)
         if (fish.y + fish.h >= GROUND_Y()) {
-          return "trash";
+          return { type: "trash", imgIdx: null };
         }
 
         for (const p of nets) {
           const inX = bx < p.x + PIPE_WIDTH && bx + bw > p.x;
 
           // Top pipe
-          if (inX && by < p.topH) return "net";
+          if (inX && by < p.topH) return { type: "net", imgIdx: null };
 
           // Bottom net — offset matches the visual BOAT_IMG_OFFSET used in drawNet
           const boatCenterX = p.x + PIPE_WIDTH / 2;
@@ -528,7 +535,7 @@ const FACTS = [
           const netY = GROUND_Y() - NET_H;
 
           if (bx < netX + netImgW && bx + bw > netX && by + bh > netY) {
-            return "net";
+            return { type: "net", imgIdx: null };
           }
         }
 
@@ -539,7 +546,7 @@ const FACTS = [
             by < t.y + TRASH_H &&
             by + bh > t.y
           ) {
-            return "trash";
+            return { type: "trash", imgIdx: t.imgIdx };
           }
         }
 
@@ -645,10 +652,10 @@ const FACTS = [
 
         fish.vy += GRAVITY;
         fish.y += fish.vy;
-
-        const collisionType = checkCollision();
-        if (collisionType) {
-          deathReason = collisionType;
+        const collisionResult = checkCollision();
+        if (collisionResult) {
+          deathReason = collisionResult.type;
+          deathImgIdx = collisionResult.imgIdx ?? null;
           state = "dead";
         }
       }
@@ -719,12 +726,14 @@ const FACTS = [
 
         let fact;
         if (deathReason === "trash") {
-          fact = TRASH_FACTS[Math.floor(Math.random() * TRASH_FACTS.length)];
-          document.querySelector(".end-title").textContent = "Game Over";
+          const name =
+            deathImgIdx !== null ? TRASH_NAMES[deathImgIdx] : "a predator";
+          fact = `You fed ${name}, but at least you're not bycatch. Play again!`;
+          document.querySelector(".end-title").textContent = "YOU’RE DINNER";
         } else if (deathReason === "net") {
           fact = NET_FACTS[Math.floor(Math.random() * NET_FACTS.length)];
           document.querySelector(".end-title").textContent =
-            "Caught in the net!";
+            "BYE, CATCH! YOU’RE BYCATCH";
         } else {
           fact = END_FACTS[Math.floor(Math.random() * END_FACTS.length)];
         }
