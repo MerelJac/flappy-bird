@@ -138,6 +138,7 @@
       const OCEAN_TOP = () => BOAT_H;
       const TRASH_W = 100;
       const TRASH_H = 80;
+      // Seconds until first trash
       const TRASH_INTERVAL = 100;
       const SALMON = "./salmon.png";
       const GAME_RUNTIME = 10;
@@ -212,7 +213,7 @@
         trashItems = [];
         ribbon = null; // spawned later
         score = 0;
-        frame = 0;
+        frame = Math.max(BOAT_INTERVAL, TRASH_INTERVAL) - 1;
         gameStartTime = null;
         lastRemainingTick = null;
         document.getElementById("score-display").textContent = "0";
