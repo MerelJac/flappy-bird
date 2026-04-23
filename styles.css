@@ -274,6 +274,9 @@ canvas {
   opacity: 0;
 }
 
+.a-tag {
+  text-decoration: none;
+}
 #finish-ribbon {
   position: absolute;
   top: 0;

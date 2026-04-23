@@ -55,8 +55,24 @@
         <div class="best-value" id="best-score">0</div>
       </div>
       <button class="btn btn-restart" id="btn-restart">Play Again</button>
-      <button class="btn btn-copy" id="btn-copy">Share Link</button>
-      <button class="btn btn-learn" id="btn-learn">Learn More</button>
+      <a href="http://salmonrun.marypeltola.com/" class="a-tag">
+        <button
+          class="btn btn-copy"
+          id="btn-copy"
+          onclick="
+            navigator.clipboard.writeText(`https://salmonrun.marypeltola.com/`);
+            this.textContent = 'Copied!';
+            setTimeout(() => (this.textContent = 'Share Link'), 2000);
+            event.preventDefault();
+          "
+        >
+          Share Link
+        </button>
+      </a>
+      <a href="https://marypeltola.com/" class="a-tag">
+        <button class="btn btn-learn" id="btn-learn">Learn More</button>
+      </a>
+
       <canvas id="bubble-canvas"></canvas>
     </div>
 
@@ -73,8 +89,23 @@
         <div class="best-value" id="win-best-score">0</div>
       </div>
       <button class="btn btn-restart" id="btn-restart-win">Play Again</button>
-      <button class="btn btn-copy" id="btn-copy-win">Share Link</button>
-      <button class="btn btn-learn" id="btn-learn-win">Learn More</button>
+      <a href="https://salmonrun.marypeltola.com/" class="a-tag">
+        <button
+          class="btn btn-copy"
+          id="btn-copy-win"
+          onclick="
+            navigator.clipboard.writeText(`https://salmonrun.marypeltola.com/`);
+            this.textContent = 'Copied!';
+            setTimeout(() => (this.textContent = 'Share Link'), 2000);
+            event.preventDefault();
+          "
+        >
+          Share Link
+        </button>
+      </a>
+      <a href="https://marypeltola.com/" class="a-tag">
+        <button class="btn btn-learn" id="btn-learn-win">Learn More</button></a
+      >
       <canvas id="bubble-canvas"></canvas>
     </div>
 
@@ -345,7 +376,7 @@
 
         const BOAT_IMG_OFFSET = 130;
         let netDrawX = null;
-        
+
         if (netImg.complete && netImg.naturalWidth > 0) {
           const drawW = NET_H * (netImg.naturalWidth / netImg.naturalHeight);
           const dx = boatX + BOAT_W / 2 - drawW / 2 + BOAT_IMG_OFFSET;
@@ -373,7 +404,13 @@
 
         if (netDrawX) {
           const jiggle = Math.sin(frame * 0.08 + net.x * 0.04) * 3;
-          ctx.drawImage(netImg, netDrawX.dx, GROUND_Y() - NET_H + jiggle, netDrawX.drawW, NET_H);
+          ctx.drawImage(
+            netImg,
+            netDrawX.dx,
+            GROUND_Y() - NET_H + jiggle,
+            netDrawX.drawW,
+            NET_H,
+          );
         }
       }
 
@@ -498,9 +535,10 @@
 
           // Bottom net — offset matches the visual BOAT_IMG_OFFSET used in drawNet
           const boatCenterX = p.x + PIPE_WIDTH / 2;
-          const netImgW = netImg.naturalWidth > 0
-            ? NET_H * (netImg.naturalWidth / netImg.naturalHeight)
-            : PIPE_WIDTH + 8;
+          const netImgW =
+            netImg.naturalWidth > 0
+              ? NET_H * (netImg.naturalWidth / netImg.naturalHeight)
+              : PIPE_WIDTH + 8;
           const netX = boatCenterX - netImgW / 2 + 130;
           const netY = GROUND_Y() - NET_H;
 
