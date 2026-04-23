@@ -345,6 +345,7 @@
 
         const BOAT_IMG_OFFSET = 130;
         let netDrawX = null;
+        
         if (netImg.complete && netImg.naturalWidth > 0) {
           const drawW = NET_H * (netImg.naturalWidth / netImg.naturalHeight);
           const dx = boatX + BOAT_W / 2 - drawW / 2 + BOAT_IMG_OFFSET;
@@ -371,7 +372,8 @@
         }
 
         if (netDrawX) {
-          ctx.drawImage(netImg, netDrawX.dx, GROUND_Y() - NET_H, netDrawX.drawW, NET_H);
+          const jiggle = Math.sin(frame * 0.08 + net.x * 0.04) * 3;
+          ctx.drawImage(netImg, netDrawX.dx, GROUND_Y() - NET_H + jiggle, netDrawX.drawW, NET_H);
         }
       }
 
