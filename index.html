@@ -457,11 +457,12 @@
       function drawTrashItems() {
         for (const t of trashItems) {
           const img = trashImgs[t.imgIdx];
+          const jiggle = Math.sin(frame * 0.08 + t.x * 0.04) * 3;
           if (img.complete && img.naturalWidth > 0) {
-            ctx.drawImage(img, t.x, t.y, TRASH_W, TRASH_H);
+            ctx.drawImage(img, t.x, t.y + jiggle, TRASH_W, TRASH_H);
           } else {
             ctx.fillStyle = "#8B4513";
-            ctx.fillRect(t.x, t.y, TRASH_W, TRASH_H);
+            ctx.fillRect(t.x, t.y + jiggle, TRASH_W, TRASH_H);
           }
         }
       }
