@@ -97,6 +97,20 @@ body {
     line-height: 48px;
     max-width: 80%;
   }
+
+  .side-by-side {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .side-by-side .btn-copy,
+  .side-by-side .btn-learn {
+    font-size: 0.95rem;
+    padding: 7px 14px;
+    color: black;
+  }
 }
 
 @media (max-width: 480px) {
@@ -168,7 +182,7 @@ canvas {
   text-align: center;
   vertical-align: middle;
   text-shadow: 2px 4px 0px #000000;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 #info-display {
@@ -199,7 +213,6 @@ canvas {
 #info-display.fade {
   opacity: 0;
 }
-
 
 .fun-fact-label {
   font-family: "Sometype Mono";
@@ -247,9 +260,9 @@ canvas {
 .end-title {
   font-size: 3rem;
   font-family: "Jersey 10", sans-serif;
-  color: #FF8D74;
+  color: #ff8d74;
   text-align: center;
-  text-shadow: 2px 2px 0px #F22F33;
+  text-shadow: 2px 2px 0px #f22f33;
 }
 
 .score-label {
@@ -303,8 +316,8 @@ canvas {
     90deg,
     #fff 0px,
     #fff 28px,
-    #FF8D74 28px,
-    #F22F33 56px
+    #ff8d74 28px,
+    #f22f33 56px
   );
   display: flex;
   align-items: center;
@@ -379,12 +392,26 @@ canvas {
   vertical-align: middle;
 }
 
-.btn-restart {
-  background: #4cbe6c;
-  color: white;
-    font-size: 1.5rem;
+.side-by-side {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-.btn-copy, .btn-learn {
-    font-size: 1.5rem;
+.side-by-side .btn-copy,
+.side-by-side .btn-learn {
+  font-size: 1.2rem;
+  padding: 7px 14px;
+  color: black;
+}
+.btn-restart {
+  background: #f22f33;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.btn-copy,
+.btn-learn {
+  font-size: 1.5rem;
 }

@@ -40,6 +40,7 @@
         <div class="ribbon-emoji-row">🌊🐟🌊🐟🌊🐟🌊</div>
       </div>
       <canvas id="game-canvas"></canvas>
+      
     </div>
 
     <!-- ── End Screen (caught) ── -->
@@ -49,31 +50,30 @@
         <div class="info-placeholder">Fun Facts</div>
         <div class="divider"></div>
         <div class="score-label">Score</div>
-        <div class="score-value" id="final-score">0</div>
-        <div class="divider"></div>
-        <div class="score-label">Best</div>
-        <div class="best-value" id="best-score">0</div>
+        <div class="best-value" id="final-score">0</div>
       </div>
       <button class="btn btn-restart" id="btn-restart">Play Again</button>
-      <a href="http://salmonrun.marypeltola.com/" class="a-tag">
-        <button
-          class="btn btn-copy"
-          id="btn-copy"
-          onclick="
-            navigator.clipboard.writeText(`https://salmonrun.marypeltola.com/`);
-            this.textContent = 'Copied!';
-            setTimeout(() => (this.textContent = 'Share Link'), 2000);
-            event.preventDefault();
-          "
-        >
-          Share Link
-        </button>
-      </a>
-      <a href="https://marypeltola.com/" class="a-tag">
-        <button class="btn btn-learn" id="btn-learn">Learn More</button>
-      </a>
-
-      <canvas id="bubble-canvas"></canvas>
+      <div class="side-by-side">
+        <a href="http://salmonrun.marypeltola.com/" class="a-tag">
+          <button
+            class="btn btn-copy"
+            id="btn-copy"
+            onclick="
+              navigator.clipboard.writeText(
+                `https://salmonrun.marypeltola.com/`,
+              );
+              this.textContent = 'Copied!';
+              setTimeout(() => (this.textContent = 'Share Link'), 2000);
+              event.preventDefault();
+            "
+          >
+            Share Link
+          </button>
+        </a>
+        <a href="https://marypeltola.com/" class="a-tag">
+          <button class="btn btn-learn" id="btn-learn">Learn More</button>
+        </a>
+      </div>
     </div>
 
     <!-- ── Win Screen ── -->
@@ -83,30 +83,32 @@
         <div class="info-placeholder" id="win-fact"></div>
         <div class="divider"></div>
         <div class="score-label">Score</div>
-        <div class="score-value" id="win-final-score">0</div>
-        <div class="divider"></div>
-        <div class="score-label">Best</div>
-        <div class="best-value" id="win-best-score">0</div>
+        <div class="best-value" id="win-final-score">0</div>
       </div>
       <button class="btn btn-restart" id="btn-restart-win">Play Again</button>
-      <a href="https://salmonrun.marypeltola.com/" class="a-tag">
-        <button
-          class="btn btn-copy"
-          id="btn-copy-win"
-          onclick="
-            navigator.clipboard.writeText(`https://salmonrun.marypeltola.com/`);
-            this.textContent = 'Copied!';
-            setTimeout(() => (this.textContent = 'Share Link'), 2000);
-            event.preventDefault();
-          "
+      <div class="side-by-side">
+        <a href="https://salmonrun.marypeltola.com/" class="a-tag">
+          <button
+            class="btn btn-copy"
+            id="btn-copy-win"
+            onclick="
+              navigator.clipboard.writeText(
+                `https://salmonrun.marypeltola.com/`,
+              );
+              this.textContent = 'Copied!';
+              setTimeout(() => (this.textContent = 'Share Link'), 2000);
+              event.preventDefault();
+            "
+          >
+            Share Link
+          </button>
+        </a>
+        <a href="https://marypeltola.com/" class="a-tag">
+          <button class="btn btn-learn" id="btn-learn-win">
+            Learn More
+          </button></a
         >
-          Share Link
-        </button>
-      </a>
-      <a href="https://marypeltola.com/" class="a-tag">
-        <button class="btn btn-learn" id="btn-learn-win">Learn More</button></a
-      >
-      <canvas id="bubble-canvas"></canvas>
+      </div>
     </div>
 
     <script>
@@ -511,12 +513,12 @@
 
         // Top = trash
         if (fish.y <= OCEAN_TOP()) {
-          return { type: "trash", imgIdx: null };
+          return { type: "dead" };
         }
 
         // Bottom = trash (sea floor, no net involved)
         if (fish.y + fish.h >= GROUND_Y()) {
-          return { type: "trash", imgIdx: null };
+          return { type: "dead" };
         }
 
         for (const p of nets) {
@@ -722,7 +724,6 @@
         stopInfoRotation();
         if (score > bestScore) bestScore = score;
         document.getElementById("final-score").textContent = score;
-        document.getElementById("best-score").textContent = bestScore;
 
         let fact;
         if (deathReason === "trash") {
@@ -730,6 +731,11 @@
             deathImgIdx !== null ? TRASH_NAMES[deathImgIdx] : "a predator";
           fact = `You fed ${name}, but at least you're not bycatch. Play again!`;
           document.querySelector(".end-title").textContent = "YOU’RE DINNER";
+        }
+        if (deathReason === "dead") {
+          const name =
+          fact = `You're busted, but at least you're not bycatch. Play again!`;
+          document.querySelector(".end-title").textContent = "GAME OVER";
         } else if (deathReason === "net") {
           fact = NET_FACTS[Math.floor(Math.random() * NET_FACTS.length)];
           document.querySelector(".end-title").textContent =
@@ -748,7 +754,6 @@
         stopInfoRotation();
         if (score > bestScore) bestScore = score;
         document.getElementById("win-final-score").textContent = score;
-        document.getElementById("win-best-score").textContent = bestScore;
         document.getElementById("win-fact").textContent =
           END_FACTS[Math.floor(Math.random() * END_FACTS.length)];
         setTimeout(() => showScreen("win"), 600);
