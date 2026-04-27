@@ -40,7 +40,6 @@
         <div class="ribbon-emoji-row">🌊🐟🌊🐟🌊🐟🌊</div>
       </div>
       <canvas id="game-canvas"></canvas>
-      
     </div>
 
     <!-- ── End Screen (caught) ── -->
@@ -731,10 +730,9 @@
             deathImgIdx !== null ? TRASH_NAMES[deathImgIdx] : "a predator";
           fact = `You fed ${name}, but at least you're not bycatch. Play again!`;
           document.querySelector(".end-title").textContent = "YOU’RE DINNER";
-        }
-        if (deathReason === "dead") {
+        } else if (deathReason === "dead") {
           const name =
-          fact = `You're busted, but at least you're not bycatch. Play again!`;
+            (fact = `You're busted, but at least you're not bycatch. Play again!`);
           document.querySelector(".end-title").textContent = "GAME OVER";
         } else if (deathReason === "net") {
           fact = NET_FACTS[Math.floor(Math.random() * NET_FACTS.length)];
